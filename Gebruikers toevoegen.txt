@@ -1,0 +1,12 @@
+gebruikers
+
+gebruiker_id
+gebruiker_naam
+gebruiker_email
+gebruiker_password
+gebruiker_level
+
+INSERT INTO gebruikers (gebruiker_naam,gebruiker_email,gebruiker_password,gebruiker_level) 
+VALUES
+('Frans Kraan','franskraan@beutech.nl',MD5('4xhi6gng'),'Productie_DVB'),
+('Lothar Buijs','lotharbuijs@beutech.nl',MD5('s3rmz29f'),'Productie_DVB');

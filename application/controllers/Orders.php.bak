@@ -1,0 +1,1344 @@
+ <?php class Orders extends MY_Controller { // Orders Controller
+
+	public function __construct(){
+		parent::__construct();
+		$this->load->model('orders_model');
+	}
+
+	public function index(){	
+	
+		//Sync orders Tibuplast
+		if(isset($_POST['submit-sync-tibuplast'])){ 
+			$this->syncOrders_tibuplast();
+		}
+		
+		//Sync orders Beutech 
+		if(isset($_POST['submit-sync-beutech'])){ 
+			$this->syncOrders_beutech();
+		}
+		
+		//Delete all orders
+		if(isset($_POST['submit-truncate-orders'])){ 
+			$this->truncateOrders();
+		}
+		
+		//Set page title
+		$data['title'] = '<i class="fas fa-th-list"></i> Orderoverzicht';
+		
+		//Load view templates
+		$this->load->view('templates/header', $data);
+		$this->load->view("orders/index.php", array());
+		$this->load->view('templates/footer');
+	}
+	
+	public function get_orderregels(){
+		$ordernr = $this->input->post("ordernr");
+		
+		$orders = $this->orders_model->getOrderRows($ordernr);
+				
+		$data_orders = array();
+
+		foreach($orders as $r) {
+			
+			//If empty afdeling show: Kies afdeling
+			$afdeling = $r['afdeling'];	
+			if(empty($afdeling)){
+				$afdeling = "<small><em>kies afdeling</em></small>";
+			}	
+
+			//Only show date is field is not empty
+			if($r['datum_klaar'] == "0000-00-00 00:00:00"){
+				$datum_klaar = "-";
+				$datum_klaar_hidden = "-";
+			}else{
+				$datum_klaar = system_to_euro_date($r['datum_klaar']);
+				$datum_klaar_hidden = $r['datum_klaar'];
+			}
+			
+			//Only show date is field is not empty
+			if($r['leverdatum'] == "0000-00-00 00:00:00"){
+				$leverdatum = "-";
+				$leverdatum_hidden = "-";
+			}else{
+				$leverdatum = system_to_euro_date($r['leverdatum']);
+				$leverdatum_hidden = $r['leverdatum'];
+			}
+			
+			//Set active class for rows
+			if($r['active'] == 1){
+				$active = "show";
+			}else{
+				$active = "hide";
+			}
+			
+			//Set status background color for rows
+			$color = "";
+			if($r['status'] == "Nieuw"){$color = "";}
+			if($r['status'] == "Mee bezig"){$color = "bg-warning";}
+			if($r['status'] == "Buitendienst"){$color = "bg-info";}
+			if($r['status'] == "WVB"){$color = "bg-secondary";}
+			if($r['status'] == "Is klaar"){$color = "bg-success";}
+			
+			$last_update = system_to_euro_date_time($r['last_update']);					
+			
+			$data_orders[] = array(
+				$r['orderregel_nr'],
+				$r['soort'],
+				$r['status'],
+				$r['artikelnr'],
+				$r['product'],
+				$afdeling,
+				$r['sub_afdeling'],
+				
+				//$r['klant'],
+				//"<a href='/beutech_productie/orders/".$r['ordernr']."'>" . $r['ordernr'] . " <i class='fas fa-eye'></i></a>",	
+				//$r['opbrgroep'],			
+				//$r['aantal'],
+				//$r['bon'], 
+				//"<span class='hidden_date'>".$datum_klaar_hidden."</span>" . $datum_klaar,
+				//$r['week_klaar'],
+				//$r['dag_klaar'],
+				//"<span class='hidden_date'>".$leverdatum_hidden."</span>" . $leverdatum,
+				//$r['week_nr'],
+				//$r['day'],
+				//$active,
+				//$r['administratie'],
+				//"<small>" .$last_update . "</small>",
+				"DT_RowId" => $r['id'],
+				"DT_RowClass" => $active . " " .  $color				 
+			);
+		}		
+		
+		$output = array(
+			"data" => $data_orders
+		);
+		
+		echo json_encode($output);
+		exit();
+	}
+	
+	public function view($ordernr = NULL){
+		$data['order_item'] = $this->orders_model->getOrder($ordernr);
+		$data['order_items'] = $this->orders_model->getOrderRows($ordernr);
+		
+		if (empty($data['order_item']))
+		{
+			show_404();
+		}
+		
+		$order_log = $this->orders_model->getOrderLogs($ordernr);
+		$data['order_log'] = $order_log;
+		
+		$data['title'] = $data['order_item']['ordernr'] . " - " .  $data['order_item']['klant'];
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('orders/orderdetails', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function view_Doorvoerbochten($week_nr = NULL){		
+		$afdeling = "Doorvoerbochten";
+		$afdeling_code = "Dvb";
+		$data['title'] = '<i class="fas fa-wave-sine"></i> ' . $afdeling;
+		
+		$ddate = date('Y-m-d');
+		$date = new DateTime($ddate);
+		$week_nr = $date->format("W");
+		
+		if(isset($_POST['submit_volgende'])){
+			if($_POST['week_nr'] == 52){
+				$_POST['week_nr'] = 01;
+			}else{
+				$_POST['week_nr'] = $_POST['week_nr'] + 01;
+			}
+		}elseif(isset($_POST['submit_vorige'])){
+			if($_POST['week_nr'] == 01){
+				$_POST['week_nr'] = 52;
+			}else{
+				$_POST['week_nr'] = $_POST['week_nr'] - 01;
+				
+			}
+		}else{
+			$_POST['week_nr'] = $week_nr;
+		}
+		
+		if(strlen($_POST['week_nr']) == 1){
+			$_POST['week_nr'] = 0 . $_POST['week_nr'];
+		};
+		
+		$dagen = array("maandag","dinsdag","woensdag","donderdag","vrijdag");
+		
+		foreach($dagen as $dag){
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling_code, $_POST['week_nr'], $dag);
+			$order_dag = ${'orders_' . $dag};
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			${'aantal_tafel_' . $dag} = 0;			
+			
+			foreach(${'orders_' . $dag} as $order){
+				if($order['sub_afdeling'] == "Sprongbochten"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bochten < 110 wel tafel"){
+						${'aantal_tafel_' . $dag} =${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bocht 90mm"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bocht 110mm"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bocht 125mm"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bocht 160mm"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+			}
+		
+			$week_set[] = array(
+				'dag' => $dag,
+				'datum_klaar' => $datum_klaar,
+				'aantal_tafels' => ${'aantal_tafel_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag}
+			);
+		}
+		$data['sub_afdelingen_list'] = $week_set;
+		
+		$this->load->view('templates/header', $data);
+		$this->load->view('orders/doorvoerbochten', $data);
+		$this->load->view('templates/footer');
+			
+	}
+
+	public function view_pe($week_nr = NULL){		
+		
+		//Set afdeling
+		$afdeling = "PE";
+		
+		//Put afdeling info in $data for view
+		$data['afdeling'] = $afdeling;
+		$data['title'] = '<i class="fas fa-circle"></i> ' . $afdeling;
+		
+		//Set all date variables for this view
+		$year = date('Y');
+		$ddate = date('Y-m-d');
+		$date = new DateTime($ddate);
+		$week_nr = $date->format("W");
+		
+		$week_nr2 = new DateTime($ddate);
+		$week_nr2->add(new DateInterval('P1W'));
+		$week_nr2 = $week_nr2->format("W");
+		
+		$week_nr3 = new DateTime($ddate);
+		$week_nr3->add(new DateInterval('P2W'));
+		$week_nr3 = $week_nr3->format("W");
+		
+		$week_nr4 = new DateTime($ddate);
+		$week_nr4->add(new DateInterval('P3W'));
+		$week_nr4 = $week_nr4->format("W");
+				
+		$_POST['week_nr'] = $week_nr;
+		$_POST['week_nr_2'] = $week_nr2;
+		$_POST['week_nr_3'] = $week_nr3;
+		$_POST['week_nr_4'] = $week_nr4;
+				
+	//Week 1
+		//Put all days of the week in array for week 1
+		$dagen = array("maandag","dinsdag","woensdag","donderdag","vrijdag");
+		
+		//Loop through dagen week 1
+		foreach($dagen as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr'], $dag);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}	
+			
+			//Set dag overzicht in week array
+			$week_set[] = array(
+				'dag' => $dag,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);	
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_1'] = $week_set;
+		$data['uren_overzicht_1'] = $this->get_uren($year, $week_nr, $afdeling);
+		
+	// END OF - Week 1
+		
+	//Week 2
+		//Put all days of the week in array for week 2
+		$dagen_2 = array("maandag_2","dinsdag_2","woensdag_2","donderdag_2","vrijdag_2");
+		
+		//Loop through dagen week 2
+		foreach($dagen_2 as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			$dag_naam = substr($dag, 0, -2);
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr_2'], $dag_naam);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}
+			
+			//Set dag overzicht in week array
+			$week_set_2[] = array(
+				'dag' => $dag_naam,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_2'] = $week_set_2;
+		$data['uren_overzicht_2'] = $this->get_uren($year, $week_nr2, $afdeling);
+		
+	// END OF - Week 2
+		
+	//Week 3
+		//Put all days of the week in array for week 3
+		$dagen_3 = array("maandag_3","dinsdag_3","woensdag_3","donderdag_3","vrijdag_3");
+		
+		//Loop through dagen week 3
+		foreach($dagen_3 as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			$dag_naam = substr($dag, 0, -2);
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr_3'], $dag_naam);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}
+			
+			//Set dag overzicht in week array
+			$week_set_3[] = array(
+				'dag' => $dag_naam,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_3'] = $week_set_3;
+		$data['uren_overzicht_3'] = $this->get_uren($year, $week_nr3, $afdeling);
+		
+	// END OF - Week 3
+		
+	//Week 4
+		//Put all days of the week in array for week 4
+		$dagen_4 = array("maandag_4","dinsdag_4","woensdag_4","donderdag_4","vrijdag_4");
+		
+		//Loop through dagen week 4
+		foreach($dagen_4 as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			$dag_naam = substr($dag, 0, -2);
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr_4'], $dag_naam);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}
+			
+			//Set dag overzicht in week array
+			$week_set_4[] = array(
+				'dag' => $dag_naam,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_4'] = $week_set_4;
+		$data['uren_overzicht_4'] = $this->get_uren($year, $week_nr4, $afdeling);
+		
+	// END OF - Week 4
+		
+		//Load the view
+		$this->load->view('templates/header', $data);
+		$this->load->view('orders/pe', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function view_putten($week_nr = NULL){		
+		
+		//Set afdeling
+		$afdeling = "Putten";
+		
+		//Put afdeling info in $data for view
+		$data['afdeling'] = $afdeling;
+		$data['title'] = '<i class="fas fa-filter"></i> ' . $afdeling;
+		
+		//Set all date variables for this view
+		$year = date('Y');
+		$ddate = date('Y-m-d');
+		$date = new DateTime($ddate);
+		$week_nr = $date->format("W");
+		
+		$week_nr2 = new DateTime($ddate);
+		$week_nr2->add(new DateInterval('P1W'));
+		$week_nr2 = $week_nr2->format("W");
+		
+		$week_nr3 = new DateTime($ddate);
+		$week_nr3->add(new DateInterval('P2W'));
+		$week_nr3 = $week_nr3->format("W");
+		
+		$week_nr4 = new DateTime($ddate);
+		$week_nr4->add(new DateInterval('P3W'));
+		$week_nr4 = $week_nr4->format("W");
+				
+		$_POST['week_nr'] = $week_nr;
+		$_POST['week_nr_2'] = $week_nr2;
+		$_POST['week_nr_3'] = $week_nr3;
+		$_POST['week_nr_4'] = $week_nr4;
+				
+	//Week 1
+		//Put all days of the week in array for week 1
+		$dagen = array("maandag","dinsdag","woensdag","donderdag","vrijdag");
+		
+		//Loop through dagen week 1
+		foreach($dagen as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr'], $dag);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}	
+			
+			//Set dag overzicht in week array
+			$week_set[] = array(
+				'dag' => $dag,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);	
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_1'] = $week_set;
+		$data['uren_overzicht_1'] = $this->get_uren($year, $week_nr, $afdeling);
+		
+	// END OF - Week 1
+		
+	//Week 2
+		//Put all days of the week in array for week 2
+		$dagen_2 = array("maandag_2","dinsdag_2","woensdag_2","donderdag_2","vrijdag_2");
+		
+		//Loop through dagen week 2
+		foreach($dagen_2 as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			$dag_naam = substr($dag, 0, -2);
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr_2'], $dag_naam);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}
+			
+			//Set dag overzicht in week array
+			$week_set_2[] = array(
+				'dag' => $dag_naam,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_2'] = $week_set_2;
+		$data['uren_overzicht_2'] = $this->get_uren($year, $week_nr2, $afdeling);
+		
+	// END OF - Week 2
+		
+	//Week 3
+		//Put all days of the week in array for week 3
+		$dagen_3 = array("maandag_3","dinsdag_3","woensdag_3","donderdag_3","vrijdag_3");
+		
+		//Loop through dagen week 3
+		foreach($dagen_3 as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			$dag_naam = substr($dag, 0, -2);
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr_3'], $dag_naam);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}
+			
+			//Set dag overzicht in week array
+			$week_set_3[] = array(
+				'dag' => $dag_naam,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_3'] = $week_set_3;
+		$data['uren_overzicht_3'] = $this->get_uren($year, $week_nr3, $afdeling);
+		
+	// END OF - Week 3
+		
+	//Week 4
+		//Put all days of the week in array for week 4
+		$dagen_4 = array("maandag_4","dinsdag_4","woensdag_4","donderdag_4","vrijdag_4");
+		
+		//Loop through dagen week 4
+		foreach($dagen_4 as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			$dag_naam = substr($dag, 0, -2);
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr_4'], $dag_naam);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}
+			
+			//Set dag overzicht in week array
+			$week_set_4[] = array(
+				'dag' => $dag_naam,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_4'] = $week_set_4;
+		$data['uren_overzicht_4'] = $this->get_uren($year, $week_nr4, $afdeling);
+		
+	// END OF - Week 4
+		
+		//Load the view
+		$this->load->view('templates/header', $data);
+		$this->load->view('orders/putten', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function view_montage($week_nr = NULL){		
+		
+		//Set afdeling
+		$afdeling = "Montage";
+		
+		//Put afdeling info in $data for view
+		$data['afdeling'] = $afdeling;
+		$data['title'] = '<i class="fas fa-tools"></i> ' . $afdeling;
+		
+		//Set all date variables for this view
+		$year = date('Y');
+		$ddate = date('Y-m-d');
+		$date = new DateTime($ddate);
+		$week_nr = $date->format("W");
+		
+		$week_nr2 = new DateTime($ddate);
+		$week_nr2->add(new DateInterval('P1W'));
+		$week_nr2 = $week_nr2->format("W");
+		
+		$week_nr3 = new DateTime($ddate);
+		$week_nr3->add(new DateInterval('P2W'));
+		$week_nr3 = $week_nr3->format("W");
+		
+		$week_nr4 = new DateTime($ddate);
+		$week_nr4->add(new DateInterval('P3W'));
+		$week_nr4 = $week_nr4->format("W");
+				
+		$_POST['week_nr'] = $week_nr;
+		$_POST['week_nr_2'] = $week_nr2;
+		$_POST['week_nr_3'] = $week_nr3;
+		$_POST['week_nr_4'] = $week_nr4;
+				
+	//Week 1
+		//Put all days of the week in array for week 1
+		$dagen = array("maandag","dinsdag","woensdag","donderdag","vrijdag");
+		
+		//Loop through dagen week 1
+		foreach($dagen as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr'], $dag);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}	
+			
+			//Set dag overzicht in week array
+			$week_set[] = array(
+				'dag' => $dag,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);	
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_1'] = $week_set;
+		$data['uren_overzicht_1'] = $this->get_uren($year, $week_nr, $afdeling);
+		
+	// END OF - Week 1
+		
+	//Week 2
+		//Put all days of the week in array for week 2
+		$dagen_2 = array("maandag_2","dinsdag_2","woensdag_2","donderdag_2","vrijdag_2");
+		
+		//Loop through dagen week 2
+		foreach($dagen_2 as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			$dag_naam = substr($dag, 0, -2);
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr_2'], $dag_naam);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}
+			
+			//Set dag overzicht in week array
+			$week_set_2[] = array(
+				'dag' => $dag_naam,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_2'] = $week_set_2;
+		$data['uren_overzicht_2'] = $this->get_uren($year, $week_nr2, $afdeling);
+		
+	// END OF - Week 2
+		
+	//Week 3
+		//Put all days of the week in array for week 3
+		$dagen_3 = array("maandag_3","dinsdag_3","woensdag_3","donderdag_3","vrijdag_3");
+		
+		//Loop through dagen week 3
+		foreach($dagen_3 as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			$dag_naam = substr($dag, 0, -2);
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr_3'], $dag_naam);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}
+			
+			//Set dag overzicht in week array
+			$week_set_3[] = array(
+				'dag' => $dag_naam,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_3'] = $week_set_3;
+		$data['uren_overzicht_3'] = $this->get_uren($year, $week_nr3, $afdeling);
+		
+	// END OF - Week 3
+		
+	//Week 4
+		//Put all days of the week in array for week 4
+		$dagen_4 = array("maandag_4","dinsdag_4","woensdag_4","donderdag_4","vrijdag_4");
+		
+		//Loop through dagen week 4
+		foreach($dagen_4 as $dag){
+			
+			//Get distinct orders per sub-afdeling
+			$dag_naam = substr($dag, 0, -2);
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $_POST['week_nr_4'], $dag_naam);
+			$order_dag = ${'orders_' . $dag};
+			
+			//Set datum klaar for view
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			
+			//Set start value for aantal uren
+			${'aantal_uren_' . $dag} = 0;	
+			
+			//Get all opmerkingen for orders per dag
+			$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+			
+			//Get all orders per dag and count productie uren
+			foreach(${'orders_' . $dag} as $order){
+				${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+			}
+			
+			//Set dag overzicht in week array
+			$week_set_4[] = array(
+				'dag' => $dag_naam,
+				'datum_klaar' => $datum_klaar,
+				'aantal_uren' => ${'aantal_uren_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag},
+				'opmerkingen' => $opmerking
+			);
+		}
+		
+		//Put all info in $data for view
+		$data['sub_afdelingen_list_4'] = $week_set_4;
+		$data['uren_overzicht_4'] = $this->get_uren($year, $week_nr4, $afdeling);
+		
+	// END OF - Week 4
+		
+		//Load the view
+		$this->load->view('templates/header', $data);
+		$this->load->view('orders/montage', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function afdelingen_werklijst_pe ($week_nr) {
+		//Set afdeling
+		$afdeling = "PE";
+		$year = date('Y');
+		$ddate = date('Y-m-d');
+		$date = new DateTime($ddate);
+		
+		for ($i = 1; $i <= 4; $i++) {
+			//Put all days of the week in array for week <num>
+			$dagen = array("maandag","dinsdag","woensdag","donderdag","vrijdag");
+			
+			//Loop through dagen week 1
+			foreach($dagen as $dag){
+				
+				//Get distinct orders per sub-afdeling
+				${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $week_nr, $dag);
+				$order_dag = ${'orders_' . $dag};
+				
+				//Set datum klaar for view
+				if(!empty($order_dag)){
+					$order_dag = array_shift($order_dag);
+					$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+				}else{
+					$datum_klaar = "";
+				}
+				
+				//Set start value for aantal uren
+				${'aantal_uren_' . $dag} = 0;	
+				
+				//Get all opmerkingen for orders per dag
+				$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+				
+				//Get all orders per dag and count productie uren
+				foreach(${'orders_' . $dag} as $order){
+					${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+				}	
+				
+				//Set dag overzicht in week array
+				$week_set[] = array(
+					'dag' => $dag,
+					'datum_klaar' => $datum_klaar,
+					'aantal_uren' => ${'aantal_uren_' . $dag},
+					'sub_afdelingen_list' => ${'orders_' . $dag},
+					'opmerkingen' => $opmerking
+				);	
+			}			
+						
+			//Put all info in $data for view
+			$data['sub_afdelingen_list'][] = $week_set;
+			$data['uren_overzicht'][] = $this->get_uren($year, $week_nr, $afdeling);
+			$week_set = [];
+			
+			$datetime = new DateTime();
+			$datetime->setISODate ((int)$datetime->format('o'), $week_nr, 1);
+			$datetime->add(new DateInterval ('P1W'));
+			$week_nr = $datetime->format("W");	
+			
+			
+		}			
+
+		print_r (json_encode ($data));
+		
+	}
+
+	public function afdelingen_werklijst_montage ($week_nr) {
+		//Set afdeling
+		$afdeling = "Montage";
+		$year = date('Y');
+		$ddate = date('Y-m-d');
+		$date = new DateTime($ddate);
+		
+		for ($i = 1; $i <= 4; $i++) {
+			//Put all days of the week in array for week <num>
+			$dagen = array("maandag","dinsdag","woensdag","donderdag","vrijdag");
+			
+			//Loop through dagen week 1
+			foreach($dagen as $dag){
+				
+				//Get distinct orders per sub-afdeling
+				${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $week_nr, $dag);
+				$order_dag = ${'orders_' . $dag};
+				
+				//Set datum klaar for view
+				if(!empty($order_dag)){
+					$order_dag = array_shift($order_dag);
+					$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+				}else{
+					$datum_klaar = "";
+				}
+				
+				//Set start value for aantal uren
+				${'aantal_uren_' . $dag} = 0;	
+				
+				//Get all opmerkingen for orders per dag
+				$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+				
+				//Get all orders per dag and count productie uren
+				foreach(${'orders_' . $dag} as $order){
+					${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+				}	
+				
+				//Set dag overzicht in week array
+				$week_set[] = array(
+					'dag' => $dag,
+					'datum_klaar' => $datum_klaar,
+					'aantal_uren' => ${'aantal_uren_' . $dag},
+					'sub_afdelingen_list' => ${'orders_' . $dag},
+					'opmerkingen' => $opmerking
+				);	
+			}			
+						
+			//Put all info in $data for view
+			$data['sub_afdelingen_list'][] = $week_set;
+			$data['uren_overzicht'][] = $this->get_uren($year, $week_nr, $afdeling);
+			$week_set = [];
+			
+			$datetime = new DateTime();
+			$datetime->setISODate ((int)$datetime->format('o'), $week_nr, 1);
+			$datetime->add(new DateInterval ('P1W'));
+			$week_nr = $datetime->format("W");	
+			
+			
+		}			
+
+		print_r (json_encode ($data));
+		
+	}
+	
+public function afdelingen_werklijst_putten ($week_nr) {
+		//Set afdeling
+		$afdeling = "Putten";
+		$year = date('Y');
+		$ddate = date('Y-m-d');
+		$date = new DateTime($ddate);
+		
+		for ($i = 1; $i <= 4; $i++) {
+			//Put all days of the week in array for week <num>
+			$dagen = array("maandag","dinsdag","woensdag","donderdag","vrijdag");
+			
+			//Loop through dagen week 1
+			foreach($dagen as $dag){
+				
+				//Get distinct orders per sub-afdeling
+				${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling, $week_nr, $dag);
+				$order_dag = ${'orders_' . $dag};
+				
+				//Set datum klaar for view
+				if(!empty($order_dag)){
+					$order_dag = array_shift($order_dag);
+					$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+				}else{
+					$datum_klaar = "";
+				}
+				
+				//Set start value for aantal uren
+				${'aantal_uren_' . $dag} = 0;	
+				
+				//Get all opmerkingen for orders per dag
+				$opmerking = $this->orders_model->getRegelOpmerkingen($afdeling, $datum_klaar);
+				
+				//Get all orders per dag and count productie uren
+				foreach(${'orders_' . $dag} as $order){
+					${'aantal_uren_' . $dag} = ${'aantal_uren_' . $dag} + $order['productie_uren'];
+				}	
+				
+				//Set dag overzicht in week array
+				$week_set[] = array(
+					'dag' => $dag,
+					'datum_klaar' => $datum_klaar,
+					'aantal_uren' => ${'aantal_uren_' . $dag},
+					'sub_afdelingen_list' => ${'orders_' . $dag},
+					'opmerkingen' => $opmerking
+				);	
+			}			
+						
+			//Put all info in $data for view
+			$data['sub_afdelingen_list'][] = $week_set;
+			$data['uren_overzicht'][] = $this->get_uren($year, $week_nr, $afdeling);
+			$week_set = [];
+			
+			$datetime = new DateTime();
+			$datetime->setISODate ((int)$datetime->format('o'), $week_nr, 1);
+			$datetime->add(new DateInterval ('P1W'));
+			$week_nr = $datetime->format("W");	
+			
+			
+		}			
+
+		print_r (json_encode ($data));
+		
+	}	
+	
+	public function afdelingen_werklijst_doorvoerbochten ($week_nr) {
+		$afdeling = "Doorvoerbochten";
+		$afdeling_code = "Dvb";
+		$ddate = date('Y-m-d');
+		$date = new DateTime($ddate);
+		//$week_nr = 24;//$date->format("W");
+		$dagen = array("maandag","dinsdag","woensdag","donderdag","vrijdag");
+
+		foreach($dagen as $dag){
+			${'orders_' . $dag} =  $this->orders_model->getSubAfdelingen($afdeling_code, $week_nr, $dag);
+			$order_dag = ${'orders_' . $dag};
+			if(!empty($order_dag)){
+				$order_dag = array_shift($order_dag);
+				$datum_klaar = system_to_euro_date($order_dag['datum_klaar']);
+			}else{
+				$datum_klaar = "";
+			}
+			${'aantal_tafel_' . $dag} = 0;			
+
+			foreach(${'orders_' . $dag} as $order){
+				if($order['sub_afdeling'] == "Sprongbochten"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bochten < 110 wel tafel"){
+						${'aantal_tafel_' . $dag} =${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bocht 90mm"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bocht 110mm"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bocht 125mm"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+				if($order['sub_afdeling'] == "Bocht 160mm"){
+						${'aantal_tafel_' . $dag} = ${'aantal_tafel_' . $dag} + $order['te_produceren'];
+				}
+			}
+		
+			$week_set[] = array(
+				'dag' => $dag,
+				'datum_klaar' => $datum_klaar,
+				'aantal_tafels' => ${'aantal_tafel_' . $dag},
+				'sub_afdelingen_list' => ${'orders_' . $dag}
+			);
+		}
+
+
+		print_r (json_encode ($week_set));
+	}
+	
+	public function update_order_row(){
+		
+		$new_data_row 					= $this->input->post("new_data_row");
+		$new_data 						= $this->input->post("new_data");
+		
+		$new_data_row_afdeling 			= $new_data_row['1'];
+		$new_data_row_sub_afdeling 		= $new_data_row['2'];
+		$new_data_row_status 			= $new_data_row['3'];
+		$new_data_row_debiteurnr		= $new_data_row['4'];
+		$new_data_row_klant 			= $new_data_row['5'];
+		$new_data_row_ordernr 			= $new_data_row['6'];
+		$new_data_row_artikelnr 		= $new_data_row['7'];
+		$new_data_row_opbrgroep 		= $new_data_row['8'];
+		$new_data_row_soort 			= $new_data_row['9'];
+		$new_data_row_product 			= $new_data_row['10'];
+		$new_data_row_aantal 			= $new_data_row['11'];
+		$new_data_row_geproduceerd		= $new_data_row['12'];
+		$new_data_row_uren 				= $new_data_row['14'];
+		$new_data_row_bon 				= nl2br($new_data_row['15']);
+		$new_data_row_datum_klaar 		= $new_data_row['16'];
+		$new_data_row_week_klaar 		= $new_data_row['17'];
+		$new_data_row_dag_klaar 		= $new_data_row['18'];
+		$new_data_row_leverdatum 		= $new_data_row['19'];
+		$new_data_row_week 				= $new_data_row['20'];
+		$new_data_row_dag 				= $new_data_row['21'];
+		$new_data_row_toon 				= $new_data_row['22'];
+		$new_data_row_administratie		= $new_data_row['23'];
+		$new_data_row_last_update_king 	= $new_data_row['24'];
+		$new_data_row_id 				= $new_data_row['DT_RowId'];
+		$new_data_row_class 			= $new_data_row['DT_RowClass'];
+		
+		$this->orders_model->update_order_row(
+			$new_data_row_afdeling, 
+			$new_data_row_sub_afdeling, 
+			$new_data_row_status,
+			$new_data_row_debiteurnr,
+			$new_data_row_klant,
+			$new_data_row_ordernr,
+			$new_data_row_artikelnr,
+			$new_data_row_opbrgroep,
+			$new_data_row_soort,
+			$new_data_row_product,
+			$new_data_row_aantal,
+			$new_data_row_geproduceerd,
+			$new_data_row_uren,
+			$new_data_row_bon,
+			$new_data_row_datum_klaar,
+			$new_data_row_week_klaar,
+			$new_data_row_dag_klaar,
+			$new_data_row_leverdatum,
+			$new_data_row_week,
+			$new_data_row_dag,
+			$new_data_row_toon,
+			$new_data_row_administratie,
+			$new_data_row_last_update_king,
+			$new_data_row_id,
+			$new_data_row_class
+		);
+		
+		$this->session->set_flashdata('msg_success', 'Regel is succesvol gewijzigd naar: <strong>' . $new_data . '</strong>');
+		
+		// 13(te_produceren)=11(aantal)-12(geproduceerd)
+		$new_data_row['13'] = $new_data_row['11'] - $new_data_row['12'];
+				
+		print_r(json_encode($new_data_row));
+				
+		exit;
+	}
+	
+	public function get_uren($year, $week_nr, $afdeling){
+		$uren_overzicht = $this->orders_model->get_uren($year, $week_nr, $afdeling);
+		return $uren_overzicht;
+	}
+	
+	public function update_uren(){
+		$id = $this->input->post("id");
+		$afdeling = $this->input->post("afdeling");
+		$year = $this->input->post("year");
+		$week = $this->input->post("week");
+		$uren_maandag = $this->input->post("uren_maandag");
+		$uren_dinsdag = $this->input->post("uren_dinsdag");
+		$uren_woensdag = $this->input->post("uren_woensdag");
+		$uren_donderdag = $this->input->post("uren_donderdag");
+		$uren_vrijdag = $this->input->post("uren_vrijdag");
+		
+		$this->orders_model->update_uren($id, $year, $week, $afdeling, $uren_maandag, $uren_dinsdag, $uren_woensdag, $uren_donderdag, $uren_vrijdag);
+		
+		$this->session->set_flashdata('msg_success', 'Uren voor week <strong>' . $week . '</strong> zijn succesvol gewijzigd.');
+	}
+	
+	public function orders_list(){
+		// Datatables Variables
+		$afdeling_filter = $this->input->post("afdeling_filter");
+		$week_klaar = $this->input->post("week_klaar");
+		
+		if(empty($afdeling_filter)) {
+           $afdeling_filter = null;
+        } 
+		
+		if(empty($week_klaar)) {
+           $week_klaar = null;
+        } 
+		
+		$orders = $this->orders_model->get_orders($afdeling_filter, $week_klaar);
+		
+		$data_orders = array();
+
+		foreach($orders->result() as $r) {
+			
+			//If empty afdeling show: Kies afdeling
+			$afdeling = $r->afdeling;	
+			if(empty($afdeling)){
+				$afdeling = "<small><em>kies afdeling</em></small>";
+			}	
+
+			//Only show date is field is not empty
+			if($r->datum_klaar == "0000-00-00 00:00:00"){
+				$datum_klaar = "-";
+				$datum_klaar_hidden = "-";
+			}else{
+				$datum_klaar = system_to_euro_date($r->datum_klaar);
+				$datum_klaar_hidden = $r->datum_klaar;
+			}
+			
+			//Only show date is field is not empty
+			if($r->leverdatum == "0000-00-00 00:00:00"){
+				$leverdatum = "-";
+				$leverdatum_hidden = "-";
+			}else{
+				$leverdatum = system_to_euro_date($r->leverdatum);
+				$leverdatum_hidden = $r->leverdatum;
+			}
+			
+			//Set active class for rows
+			if($r->active == 1){
+				$active = "show";
+			}else{
+				$active = "hide";
+			}
+			
+			//Set status background color for rows
+			$color = "";
+			if($r->status == "Nieuw"){$color = "";}
+			if($r->status == "Mee bezig"){$color = "bg-warning";}
+			if($r->status == "Buitendienst"){$color = "bg-info";}
+			if($r->status == "WVB"){$color = "bg-secondary";}
+			if($r->status == "Is klaar"){$color = "bg-success";}
+			if($r->status != "Is klaar"){
+				$statuscheck = "<input type=\"checkbox\" />";
+			} else {
+				$statuscheck = "";
+			}
+						
+			$last_update = system_to_euro_date_time($r->last_update);								
+			
+			$data_orders[] = array(
+				$statuscheck,
+				$afdeling,
+				$r->sub_afdeling,
+				$r->status,
+				$r->debiteurnr,
+				$r->klant,
+				"<a href='/beutech_productie/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>",
+				$r->artikelnr,
+				$r->opbrgroep,
+				$r->soort,
+				$r->product,
+				$r->aantal,
+				$r->geproduceerd,
+				$r->te_produceren,
+				$r->productie_uren,
+				$r->bon, 
+				"<span class='hidden_date'>".$datum_klaar_hidden."</span>" . $datum_klaar,
+				$r->week_klaar,
+				$r->dag_klaar,
+				"<span class='hidden_date'>".$leverdatum_hidden."</span>" . $leverdatum,
+				$r->week_nr,
+				$r->day,
+				$active,
+				$r->administratie,
+				"<small>" .$last_update . "</small>",
+				"DT_RowId" => $r->id,
+				"DT_RowClass" => $active . " " .  $color				 
+			);
+		}
+		$total_orders = $this->orders_model->get_total_orders();
+		
+		$output = array(
+			"data" => $data_orders
+		);
+		
+		echo json_encode($output);
+		exit();
+    }
+	
+	public function syncOrders_tibuplast(){
+		$this->orders_model->syncOrders_tibuplast();	
+	}
+	
+	public function syncOrders_beutech(){
+		$this->orders_model->syncOrders_beutech();	
+	}
+	
+	public function truncateOrders(){
+		$this->orders_model->truncateOrders();	
+	}
+	
+} //END OF - Orders Controller

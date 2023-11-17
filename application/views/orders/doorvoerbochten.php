@@ -1,0 +1,621 @@
+<!-- Orderoverzicht - Doorvoerbochten Pagina-->
+
+<!-- Check user rights to view this page -->
+<?php if ( $user_access === 1) { ?>
+
+<?php
+	$rockerurl = site_url ("assets/images/wait.gif");
+?>
+
+<!-- Page heading row -->
+<div class="row d-flex justify-content-center border-dark bg-dark py-1 mt-0 mb-2">
+	<div class="col my-2 text-center">
+		<a class="btn btn-secondary btn-sm" href="/beutech_productie/orders" role="button"><i class="fas fa-arrow-left"></i> Terug</a>
+	</div>
+</div>
+<!-- END OF - Page heading row -->
+
+<!-- Show Week overzicht-->
+<div class="row mb-2">
+	<div class="col-12 text-center mb-0">
+		<form action="" method="post">
+			<input type="hidden" name="week_nr" value="<?php echo $_POST['week_nr'] ?>" />
+			<button class="btn btn-primary mx-3 btn-sm" type="submit" name="submit_vorige"><i class="fas fa-arrow-left"></i> Vorige week</button>
+			<h3 class="d-inline-block"> <?php echo "Weeknummer: " . $_POST['week_nr']; ?> </h3>
+			<button class="btn btn-primary mx-3 btn-sm" type="submit"  name="submit_volgende">Volgende week <i class="fas fa-arrow-right"></i></button>
+		</form>
+	</div>
+</div>
+
+<div class="row mb-0">
+
+	<!-- Show dag overzicht deze week -->
+	<?php foreach($sub_afdelingen_list as $day){ ?>
+		<div class="col-12 col-sm-6 col-xl p-1 pr-lg-3 pl-lg-3">
+				
+			<table class="table table-hover table-sm">
+				<thead class="thead bg-secondary text-white">
+					<tr>
+						<th scope="col"><i class="fas fa-calendar-day"></i> <?php echo $day['dag']; ?> <small><?php echo $day['datum_klaar']; ?></small></th>
+						<th scope="col" class="text-right"><i class="fas fa-tally"></i></th>
+					</tr>
+				</thead>
+				<tbody class="week_overzicht">
+					<?php 
+						$aantal = 0;
+						foreach($day['sub_afdelingen_list'] as $sub_afdelingen){ 
+							$aantal = $aantal + $sub_afdelingen['te_produceren'];
+							
+							$unique_string = $day['datum_klaar'] . $sub_afdelingen['sub_afdeling'];
+							$row_alert = "";
+							
+							if(array_search($unique_string, array_column($status_doorvoerbochten, 'unique_string')) !== false) {
+								$row_alert = "row_alert";
+							}
+							else {
+								$row_alert = "";
+							}
+
+					?>
+						<tr class="<?php echo $row_alert; ?>">							
+							<td class="rij" id="<?php echo $day['datum_klaar']; ?>"><?php echo $sub_afdelingen['sub_afdeling']; ?></td>
+							<td class="text-right"><?php echo $sub_afdelingen['te_produceren']; ?></td>
+						</tr>
+					<?php } ?>
+				</tbody>
+				<tfoot>
+					<tr class="bg-light">
+						<td><br /><strong>Subtotaal setjes:</strong></td>
+						<td class="text-right"><br /><strong><?php echo $day['aantal_setjes']; ?></strong></td>
+					</tr>
+					<tr class="bg-light">
+						<td><strong>Totaal bochten:</strong></td>
+						<td class="text-right"><strong><?php echo $day['aantal_bochten']; ?></strong></td>
+					</tr>
+					<tr class="bg-light">
+						<td><strong>Totaal tafel bochten:</strong></td>
+						<td class="text-right"><strong><?php echo $day['aantal_tafels']; ?></strong></td>
+					</tr>
+					<!--
+					<tr class="bg-light">
+						<td><strong>Nog te produceren <?php echo $day['dag']; ?>:</strong></td>
+						<?php 
+							if($aantal == 0){
+								echo '<td class="text-right bg-success text-white">';
+							}elseif($aantal < 0){
+								echo '<td class="text-right bg-danger text-white">';
+							}else{
+								echo '<td class="text-right">';
+							}
+						?>
+							<strong><?php echo $aantal; ?></strong></td>
+					</tr>
+					-->
+				</tfoot>	
+			</table>
+		</div>
+	<?php } ?>
+	<!-- END OF - Show dag overzicht deze week -->
+	
+		<script>
+			$(document).ready(function(){
+				$('.rij').on('click',function(event){
+					var datum_klaar = event.target.id;
+					var sub_afdeling = $(this).html();
+					
+					var unique_string = datum_klaar + sub_afdeling;
+					$(event.target).closest('tr').toggleClass('row_alert')
+										
+					$.ajax({
+						url : "<?php echo site_url('Orders/update_status_doorvoerbochten') ?>",
+						type : 'POST',
+						data: {
+							"unique_string": unique_string,
+							"datum_klaar": datum_klaar,
+							"sub_afdeling":	sub_afdeling					
+						},
+						success: function(){						
+							//alert('Succes: Het wijzigen van de status is gelukt');
+						},
+						error: function(){
+							//alert('Fout: Het wijzigen van de status is niet gelukt');
+						}
+					});
+					
+				});
+			});
+		</script>
+	
+</div>
+
+<div class="row mb-0">
+	<div class="col-12 text-center mb-0">
+		<h3 class="d-inline-block"> <?php echo "Weeknummer: " . $week_2; ?> </h3>
+	</div>
+</div>
+
+<div class="row mb-2">
+	<!-- Show dag overzicht volgende week -->
+	<?php foreach($sub_afdelingen_list_2 as $day){ ?>
+		<div class="col-12 col-sm-6 col-xl p-1 pr-lg-3 pl-lg-3">
+			<table class="table table-hover table-sm">
+				<thead class="thead bg-secondary text-white">
+					<tr>
+						<th scope="col"><i class="fas fa-calendar-day"></i> <?php echo $day['dag']; ?> <small><?php echo $day['datum_klaar']; ?></small></th>
+						<th scope="col" class="text-right"><i class="fas fa-tally"></i></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php 
+						$aantal = 0;
+						foreach($day['sub_afdelingen_list'] as $sub_afdelingen){ 
+							$aantal = $aantal + $sub_afdelingen['te_produceren'];
+							
+							$unique_string = $day['datum_klaar'] . $sub_afdelingen['sub_afdeling'];
+							$row_alert = "";
+							
+							if(array_search($unique_string, array_column($status_doorvoerbochten, 'unique_string')) !== false) {
+								$row_alert = "row_alert";
+							}
+							else {
+								$row_alert = "";
+							}
+							
+					?>
+						<tr class="<?php echo $row_alert; ?>">	
+							<td class="rij" id="<?php echo $day['datum_klaar']; ?>"><?php echo $sub_afdelingen['sub_afdeling']; ?></td>
+							<td class="text-right"><?php echo $sub_afdelingen['te_produceren']; ?></td>
+						</tr>
+						
+					<?php } ?>
+				</tbody>
+				<tfoot>
+					<tr class="bg-light">
+						<td><br /><strong>Subtotaal setjes:</strong></td>
+						<td class="text-right"><br /><strong><?php echo $day['aantal_setjes']; ?></strong></td>
+					</tr>
+					<tr class="bg-light">
+						<td><strong>Totaal bochten:</strong></td>
+						<td class="text-right"><strong><?php echo $day['aantal_bochten']; ?></strong></td>
+					</tr>
+					<tr class="bg-light">
+						<td><strong>Totaal tafel bochten:</strong></td>
+						<td class="text-right"><strong><?php echo $day['aantal_tafels']; ?></strong></td>
+					</tr>
+				</tfoot>	
+			</table>
+		</div>
+	<?php } ?>
+	<!-- END OF - Show dag overzicht volgende week -->
+</div>
+<!-- END OF - Show Week overzicht-->
+
+<!-- Order table row-->
+<table id="order_table" class="table table-bordered table-hover" width="100%">
+	<thead class="bg-secondary text-white">
+		<tr>
+			<td></td>
+			<td>Afdeling</td>
+			<td>Sub afdeling</td>
+			<td>Status</td>
+			<td>Debiteurnr.</td>
+			<td>klant</td>
+			<td>Ordernr.</td>
+			<td>Artikelnr.</td>
+			<td>Opbr.groep</td>
+			<td>Soort</td>
+			<td>Product</td>
+			<td>Aantal</td>
+			<td>Geproduceerd</td>
+			<td>Te produceren</td>
+			<td>Uren</td>
+			<td>Bon</td>
+			<td>Datum klaar</td>
+			<td>Week klaar</td>
+			<td>Dag klaar</td>
+			<td>Leverdatum</td>
+			<td>Week</td>
+			<td>Dag</td>
+			<td>Tonen</td>
+			<td>Administratie</td>
+			<td>Laatst bijgewerkt</td>
+			<td>Recept</td>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- FILL Table with Datatables Ajax call -->
+	</tbody>
+</table>
+<!-- END OF - Order table row-->
+
+<script>
+$(document).ready(function(){
+	//Scripts after ajax complete
+	$( document ).ajaxComplete(function() {
+		
+		table = $('#order_table').DataTable();
+
+		function  myCallbackFunction(updatedCell, updatedRow, oldValue) {			
+			// update column #13 (te_produceren)
+		
+			$.ajax({
+				url : "<?php echo site_url('Orders/update_order_row') ?>",
+				type : 'POST',
+				data: {
+					"afdeling": 	"<?php echo $afdeling_name; ?>",
+					"new_data":		updatedCell.data,
+					"old_data":		oldValue,
+					"new_data_row":	updatedRow.data()
+				},
+				success: function(){
+					AjaxCallDagenOverzicht();	//update overzicht.
+					table.ajax.reload();
+				},
+				error: function(){
+					alert('Fout: Het wijzigen van de orderregel is niet gelukt');
+				}
+			});
+			
+		}
+		<!-- Check writing rights -->
+		<?php if($this->session->userdata('schrijven') == 1){ ?>
+		table.MakeCellsEditable({
+			"onUpdate": myCallbackFunction,
+			"inputCss":'my-input-class',
+			"columns": [1,2,3,12,14],
+			"allowNulls": {
+				"columns": [1,2,3,12,14],
+				"errorClass": 'error'
+			},
+			"confirmationButton": { 
+				"confirmCss": 'btn btn-primary btn-sm edit_button',
+				"cancelCss": 'btn btn-secondary btn-sm edit_button'
+			},
+			"inputTypes": [
+				{
+					"column":1, 
+					"type": "list",
+					"options":[
+						<?php foreach($afdeling_list_all as $afdeling){  ?>
+							{ "value": "<?php echo $afdeling['afdeling']; ?>", "display": "<?php echo $afdeling['afdeling']; ?>" },
+						<?php } ?>	
+					]
+				},
+				{
+					"column":2, 
+					"type": "list",
+					"options":[
+						<?php foreach($sub_afdeling_list_all as $subafdeling){  ?>
+							{ "value": "<?php echo $subafdeling['sub_afdeling']; ?>", "display": "<?php echo $subafdeling['sub_afdeling']; ?>" },
+						<?php } ?>	
+					]
+				},
+				{
+					"column":3, 
+					"type": "list",
+					"options":[
+						{ "value": "Nieuw", "display": "Nieuw" },
+						{ "value": "Mee bezig", "display": "Mee bezig" },
+						{ "value": "Buitendienst", "display": "Buitendienst" },
+						{ "value": "WVB", "display": "WVB" },
+						{ "value": "Is klaar", "display": "Is klaar" }
+					]
+				},
+				{
+					"column":12, 
+					"type":"text", 
+					"options":null 
+				},
+				{
+					"column":14, 
+					"type":"text", 
+					"options":null 
+				}
+			]
+		});
+		<?php } ?>
+		
+		function AjaxCallDagenOverzicht() {
+			// nieuw ajax aanvraag voor bijwerken dagenoverzicht.
+			$.ajax ({
+				url : "<?php echo site_url("Orders/afdelingen_werklijst_doorvoerbochten/" . $_POST['week_nr']) ?>",
+				type : 'GET',
+				success: function(lijst) {
+					// tekenen nieuw overzicht.		
+					var dagdata = JSON.parse (lijst);
+					var tabellen = $(".table-sm");
+					var totaalopdracht = 0;
+					for (i = 0; i < 5; i++) {
+						var aantal = tabellen[i].children[1].children.length;
+						// tellers op 0
+						for (j = 0; j < aantal; j++) {
+							tabellen[i].children[1].children[j].children[1].innerText = "0";
+						}
+						totaalopdracht = 0;
+						for (k = 0; k < dagdata[i].sub_afdelingen_list.length; k++) {
+							totaalopdracht += parseInt (dagdata[i].sub_afdelingen_list[k].te_produceren);
+							for (j = 0; j < aantal; j++) {
+								if (dagdata[i].sub_afdelingen_list[k].sub_afdeling == 
+									tabellen[i].children[1].children[j].children[0].innerText) {
+										tabellen[i].children[1].children[j].children[1].innerText = dagdata[i].sub_afdelingen_list[k].te_produceren;
+									}
+							}										
+						}
+						tabellen[i].children[2].children[0].children[1].innerHTML = "<br /><strong>" + dagdata[i].aantal_tafels + "</strong>";;
+						tabellen[i].children[2].children[1].children[1].innerHTML = "<strong>" + totaalopdracht + "</strong>";
+					}
+					
+				},
+				error: function() {
+					document.location.reload(true);
+				}
+			});
+		}
+		
+		// ruim oude (+) knop op.
+		$(".add_geproduceerd").remove();
+		
+		<!-- Check writing rights -->
+		<?php if($this->session->userdata('schrijven') == 1){ ?>
+		
+		// maak (+) knop voor geproduceerd
+		gNodes = table.column(12).nodes();
+		for (i = 0; i < gNodes.length; i++) {
+			gNodes[i].innerHTML = gNodes[i].innerHTML.replace ("&nbsp;", "");	 // cleanup
+			gNodes[i].innerHTML += "&nbsp;<input type=\"button\" value=\"+\" class=\"add_geproduceerd\" />";
+		}
+				
+		function InstallAddHandler() {
+			// install handler for geproduceerd (+) knop.
+			$(".add_geproduceerd").unbind();
+			$(".add_geproduceerd").click(function (e) {
+				rowobj = this.parentElement.parentElement;
+				cell = this.parentElement;
+				amount = prompt ("Hoeveel zijn er geproduceerd?");
+				if (amount == null || amount == "") {
+				} else {
+					
+					if (isNaN(amount)) {
+						alert ("Geef a.u.b. een getal");
+						return;
+					}
+					
+					valNum = Number(amount);
+					if (valNum != Math.floor(valNum)) {
+						alert ("Geef a.u.b. een geheel getal");
+						return;
+					}
+					
+					v = table.rows(rowobj).data();
+
+					updatedRow = table.rows(rowobj);
+					
+					vbase = Number(v[0][12]);
+					vadd = Number(amount);
+					v[0][12] = vbase + vadd;
+					
+					vAantal = Number(v[0][11]);
+					vGeproduceerd = Number(v[0][12]);
+					if (vGeproduceerd > vAantal) {
+						v[0][12] = v[0][11];
+						vGeproduceerd = vAantal;
+					}
+					if (vGeproduceerd < 0) {
+						v[0][12] = 0;
+						vGeproduceerd = 0;
+					}			
+					
+					v[0][13] = vAantal - vGeproduceerd;
+					updatedRow.selector.rows.className = updatedRow.selector.rows.className.replace(" bg-success", "").replace(" bg-warning", "");
+					if (vAantal == vGeproduceerd) {
+						// zit status ook op klaar.
+						v[0][3] = "Is klaar";
+						v[0][0] = "<input type=\"checkbox\" checked />";
+						updatedRow.selector.rows.className += " bg-success";
+					} else {
+						v[0][0] = "<input type=\"checkbox\" />";
+						if (vGeproduceerd == 0) {
+							v[0][3] = "Nieuw";
+						} else {
+							v[0][3] = "Mee bezig";
+							updatedRow.selector.rows.className += " bg-warning";
+						}
+					}
+					table.rows(updatedRow).data(v);
+					cell.innerHTML = v[0][12];
+					
+					$.ajax({
+						url : "<?php echo site_url('Orders/update_order_row') ?>",
+						type : 'POST',
+						data: {
+							"afdeling": 	"<?php echo $afdeling_name; ?>",
+							"new_data":		vGeproduceerd,
+							"old_data":		vbase,
+							"new_data_row":	v[0],
+							"geproduceerd":	vadd
+						},
+						success: function() {
+							cc = updatedRow.selector.rows.className;
+							table.rows(updatedRow).invalidate().draw();
+							updatedRow.selector.rows.className = cc;
+							cell.innerHTML += "&nbsp;<input type=\"button\" value=\"+\" class=\"add_geproduceerd\" />";
+							AjaxCallDagenOverzicht();
+							InstallAddHandler();
+						},
+						error: function(){
+							alert('Fout: Het wijzigen van de orderregel is niet gelukt');
+							document.location.reload(true);
+						}
+					});					
+				}
+			});			
+		}
+		
+		InstallAddHandler();
+		
+		// install handler for checkboxes.
+		$(":checkbox").unbind();
+		$(":checkbox").click(function(e) {
+			rowobj = this.parentElement.parentElement;
+			isChecked = this.checked;
+			if (isChecked) {
+				this.parentElement.innerHTML = "<img src=\"<?php echo $rockerurl ?>\" width=16 height=16 />";
+				rowobj.className = rowobj.className.replace (" bg-success", "").replace(" bg-warning", "");
+				rowobj.className += " bg-success";
+				t = $("#order_table").DataTable();
+				v = t.rows(rowobj).data();
+				oldValue = v[0][3];
+				v[0][0] = "<input type=\"checkbox\" checked />";
+				v[0][3] = "Is klaar";
+				v[0][12] = v[0][11];	// zet geproduceerd op aantal.
+				v[0][13] = 0;	// zet te_produceren op 0.
+				//console.log(v);			
+				t.rows(rowobj).data(v);
+				$.ajax({
+					url : "<?php echo site_url('Orders/update_order_row') ?>",
+					type : 'POST',
+					data: {
+						"afdeling": 	"<?php echo $afdeling_name; ?>",
+						"new_data":		"Is klaar",
+						"old_data":		oldValue,
+						"new_data_row":	v[0]
+					},
+					success: function() {
+						cc = rowobj.className;
+						t.rows(rowobj).invalidate().draw();
+						rowobj.className = cc;
+						AjaxCallDagenOverzicht();
+					},
+					error: function(){
+						alert('Fout: Het wijzigen van de orderregel is niet gelukt');
+						document.location.reload(true);
+					}
+				});
+			} else {
+				this.parentElement.innerHTML = "<img src=\"<?php echo $rockerurl ?>\" width=16 height=16 />";
+				rowobj.className = rowobj.className.replace (" bg-success", "").replace(" bg-warning", "");
+				t = $("#order_table").DataTable();
+				v = t.rows(rowobj).data();
+				oldValue = v[0][3];
+				v[0][0] = "<input type=\"checkbox\" />";
+				v[0][3] = "Nieuw";
+				t.rows(rowobj).data(v);
+				$.ajax({
+					url : "<?php echo site_url('Orders/update_order_row') ?>",
+					type : 'POST',
+					data: {
+						"afdeling": 	"<?php echo $afdeling_name; ?>",
+						"new_data":		"Nieuw",
+						"old_data":		oldValue,
+						"new_data_row":	v[0]
+					},
+					success: function() {
+						t.rows(rowobj).invalidate().draw();
+						AjaxCallDagenOverzicht();
+					},
+					error: function(){
+						alert('Fout: Het wijzigen van de orderregel is niet gelukt');
+						document.location.reload(true);
+					}
+				});
+			}
+		});
+		<?php } ?>
+		
+	});
+	
+	//Datatable script
+	var table = $('#order_table').DataTable({
+		"processing": 			false,
+		"serverSide": 			false,
+		"responsive":			true,
+		"dom":            		'Bl<"search_bar"f>rti<"pagination-sm"p>',
+		"buttons": {
+			"buttons": [
+				'colvis'
+			],
+			"dom": {
+				"button": {
+					"tag": "button",
+					"className": "btn btn-success btn-sm"
+				},
+				"buttonLiner": {
+					"tag": null
+				}
+			}
+		},
+		"stateSave": 			true,
+		"pageLength" 			: 999999,
+		"lengthMenu": 			[[10, 25, 50, 999999], [10, 25, 50, "Alle"]],			
+		"order": 				[[ 19, "asc" ],[ 6, "asc" ]], //Sorteer op leverdatum & ordernummer
+		"columns": 				[				
+									null,					// 0 Afvinken
+									{ "visible": false },	// 1  Afdeling
+									null,				 	// 2  Sub afdeling
+									null, 					// 3  Status
+									{ "visible": false },	// 4  Debiteurnr
+									{ "visible": false },	// 5  Klant
+									null, 					// 6  Ordernr.
+									{ "visible": false },	// 7  Artikelnr.
+									{ "visible": false }, 	// 8 Opbrgroep
+									{ "visible": false }, 	// 9 Orderregel soort
+									null, 					// 10 Product
+									null, 					// 11 Aantal
+									null,					// 12 Geproduceerd
+									null,					// 13 Te produceren
+									{ "visible": false },	// 14 Uren
+									{ "visible": false },	// 15 Bon
+									null, 					// 16 Datum klaar
+									null, 					// 17 Week klaar
+									null, 					// 18 Dag klaar
+									null, 					// 19 Leverdatum
+									{ "visible": false }, 	// 20 Week nr
+									{ "visible": false }, 	// 21 Dag van de week
+									{ "visible": false }, 	// 22 Tonen
+									{ "visible": false }, 	// 23 Administratie
+									{ "visible": false },	// 24 Laatst bijgewerkt
+									{ "visible": false },	// 25 Recept URL
+								],
+		"language": 			{
+									"processing": 	"<div class='alert alert-success m-0 p-3'>Even geduld, de resultaten worden opgehaald</div>",
+									"loadingRecords": 	"<div class='alert alert-warning'>Even geduld, de orderregels worden opgehaald</div>",
+									"lengthMenu": 		"Toon _MENU_ orders per pagina",
+									"zeroRecords": 		"<div class='alert alert-warning'>Geen orderregels gevonden.</div>",
+									"info": 			"Toon pagina _PAGE_ van _PAGES_ van totaal _TOTAL_",
+									"search": 			"Zoeken:",
+									"infoEmpty":    	"Toon 0 tot 0 van 0 orderregels",
+									"paginate": 		{
+															"first":      	"Eerste",
+															"last":       	"Laatste",
+															"next":       	"Volgende",
+															"previous":   	"Vorige"
+														},
+									"infoFiltered": 	"(Gefilterd uit _MAX_ orderregels)",
+									"buttons": 			{
+															"colvis": 		"Toon/verberg kolommen"
+														}
+								},
+		"fixedHeader": 			true,						
+		"ajax": 				{
+									url : "<?php echo site_url('Orders/orders_list') ?>",
+									type : 'POST',
+									data: {
+										"afdeling_filter":		'DVB',
+										"week_klaar":			'<?php echo $_POST["week_nr"]; ?>'
+									}
+								}
+	});	
+});
+
+</script>
+
+<!-- Show message if user has no rights to view this page -->	
+<?php } else{ ?>
+	<div class="row my-3">
+		<div class="col text-center">
+			<div class="alert alert-danger" role="alert">
+				U heeft niet de juiste rechten om deze pagina te bekijken.
+			</div>
+		</div>	
+	</div>
+<?php } ?>

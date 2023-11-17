@@ -1,0 +1,152 @@
+/* Custom styles */
+body{
+	font-family: Source Sans Pro,sans-serif,Helvetica;
+	font-size: 14px;
+}
+hr{
+	margin: 0 !important;
+}
+
+#afdeling_table .form-check-input {
+    position: absolute;
+    margin-top: .05rem;
+    margin-left: -1.25rem;
+}
+table tbody td.custom_order{
+	color: rgba(0,0,0,0.01) !important;
+}
+.container-fluid{
+	background: radial-gradient(#dfe6ed,#f9f9f9);
+}
+.bg-primary {
+    background-color: #e1322c !important;
+}
+.bg-light {
+    background: radial-gradient(#f8f9f9,#dee1e2)!important;
+}
+.bg-secondary {
+	background: radial-gradient(#525e69,#6c757d) !important;
+}
+.bg-info {
+    background: radial-gradient(#17a2b8,#08869a) !important;
+}
+.bg-dark {
+	background: radial-gradient(#5c5d5e,#343a40) !important;  
+}
+.bg-success{
+	background: radial-gradient(#50ca6c,#28a745) !important; 
+}
+.bg-warning{
+	background: radial-gradient(#fdd764,#ffc107) !important;	 
+}
+.btn{
+	background-image: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.1) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.04));
+    background-repeat: repeat-x;
+	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+}
+.alert-primary {
+	background: radial-gradient(#cce5ff,#a0c8f1) !important;
+}
+.alert-success {
+	background: radial-gradient(#d4edda,#b0e2bc) !important;
+}
+.edit_button{
+	width: 100%;
+}
+.pagination li a{
+	background-image: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.1) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.04));
+    background-repeat: repeat-x;
+}
+.btn-group-sm > .btn, .btn-sm {
+    padding: .1rem .2rem;
+    font-size: .775rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+}
+.collapse input{
+	width: 100%;
+}
+.table{
+	-webkit-box-shadow: 0px 0px 2px 1px rgba(153,153,153,1);
+	-moz-box-shadow: 0px 0px 2px 1px rgba(153,153,153,1);
+	box-shadow: 0px 0px 2px 1px rgba(153,153,153,1);
+	background: #FFF;
+	border-collapse: collapse;
+}
+.table:hover{
+	cursor: pointer;
+}
+.table thead td, .table thead th{
+	background-image: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.1) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.04));
+    background-repeat: repeat-x;
+	font-weight: bold;
+}
+.sorting_asc, .sorting_desc{
+	background-color: #70c383 !important;
+	color: #ffffff !important; 
+	background-image: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.1) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.04));
+    background-repeat: repeat-x;
+}
+.table tbody .hide {
+	background-color: #fff5f3 !important;
+}
+.table tbody tr.bg-warning{	
+	background-color: #fcf4db !important;
+}
+.table tbody tr.bg-info{	
+	background-color: #d5f0f4 !important;
+}
+.table tbody tr.bg-secondary{	
+	background-color: #cfe1f2 !important;
+}
+.table tbody tr.bg-success{	
+	background-color: #d8f8df !important;
+}
+.table td, .table th {
+	padding: .2rem !important;
+}
+.table td{
+	font-size: 0.85em  !important;
+}
+.table td .hidden_date{
+	display:none;
+}
+
+.search_bar label{
+	width: 95% !important;
+	text-align: center !important;
+}
+.search_bar label input{
+	width: 80% !important;
+	font-weight: bold !important;
+}
+.search_bar #order_table_filter{
+	text-align: center !important;
+}
+#order_table_length{
+	display: inline-block;
+	margin: 10px;
+}
+.my-input-class{
+	width: 100%;
+}
+
+.row_alert{
+	background-color: rgb(255 194 194);
+}
+
+/* Paste this css to your style sheet file or under head tag */
+/* This only works with JavaScript, 
+if it's not present, don't show loader 
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url("/beutech_productie/assets/images/Preloader_101.gif") center no-repeat rgba(0,0,0,0.5);
+}
+*/
