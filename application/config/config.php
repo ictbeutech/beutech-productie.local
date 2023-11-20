@@ -566,7 +566,7 @@ elseif($app_environment == 'staging') {
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
 	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
 	define( 'WEBSERVICES_POORT',			'8081' );
-	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech_Staging' );
+	define( 'WEBSERVICES_ADMINISTRATIE',	'BeuteKB_Staging' );
 
 	if( !defined( 'ENVIRONMENT' ) ) {
 		define('ENVIRONMENT', 'staging');
@@ -580,7 +580,7 @@ else {
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
 	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
 	define( 'WEBSERVICES_POORT',			'8081' );
-	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech' );
+	define( 'WEBSERVICES_ADMINISTRATIE',	'BeuteKB' );
 
 	if( !defined( 'ENVIRONMENT' ) ) {
 		define('ENVIRONMENT', 'production');
