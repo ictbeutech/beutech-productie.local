@@ -553,7 +553,15 @@ if($app_environment == 'development') {
 	define( 'WEBSERVICES_HOST',				'127.0.0.1' );
 	define( 'WEBSERVICES_POORT',			'8080' );
 	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech_dev' );
+
+	define( 'ODBC_TIBUPLAST_USER',		"Tibuplast" );
+	define( 'ODBC_TIBUPLAST_PASS',		"Maatwerk" );			
+	define( 'ODBC_TIBUPLAST_SOURCE',	"KingDataDigger_Tibuplas_dev" );
 	
+	define( 'ODBC_BEUTE_USER',			"Maatwerk" );
+	define( 'ODBC_BEUTE_PASS',			"geheim" );			
+	define( 'ODBC_BEUTE_SOURCE',		"KingDataDigger_BeuteKB_dev" );
+
 	if( !defined( 'ENVIRONMENT' ) ) {
 		define('ENVIRONMENT', 'development');
 	}
@@ -568,6 +576,14 @@ elseif($app_environment == 'staging') {
 	define( 'WEBSERVICES_POORT',			'8081' );
 	define( 'WEBSERVICES_ADMINISTRATIE',	'BeuteKB_Staging' );
 
+	define( 'ODBC_TIBUPLAST_USER',		"Tibuplast" );
+	define( 'ODBC_TIBUPLAST_PASS',		"Maatwerk" );			
+	define( 'ODBC_TIBUPLAST_SOURCE',	"KingDataDigger_Tibuplas_Staging" );
+	
+	define( 'ODBC_BEUTE_USER',			"Maatwerk" );
+	define( 'ODBC_BEUTE_PASS',			"geheim" );			
+	define( 'ODBC_BEUTE_SOURCE',		"KingDataDigger_BeuteKB_Staging" );
+
 	if( !defined( 'ENVIRONMENT' ) ) {
 		define('ENVIRONMENT', 'staging');
 	}
@@ -581,6 +597,14 @@ else {
 	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
 	define( 'WEBSERVICES_POORT',			'8081' );
 	define( 'WEBSERVICES_ADMINISTRATIE',	'BeuteKB' );
+
+	define( 'ODBC_TIBUPLAST_USER',		"Tibuplast" );
+	define( 'ODBC_TIBUPLAST_PASS',		"Maatwerk" );			
+	define( 'ODBC_TIBUPLAST_SOURCE',	"KingDataDigger_Tibuplas" );
+	
+	define( 'ODBC_BEUTE_USER',			"Maatwerk" );
+	define( 'ODBC_BEUTE_PASS',			"geheim" );			
+	define( 'ODBC_BEUTE_SOURCE',		"KingDataDigger_BeuteKB" );
 
 	if( !defined( 'ENVIRONMENT' ) ) {
 		define('ENVIRONMENT', 'production');

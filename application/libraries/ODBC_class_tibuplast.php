@@ -5,9 +5,9 @@ class ODBC_class_tibuplast {
 
    // ------- Constructor ------- //
 	function __construct() {
-		$this->user = "Tibuplast";
-		$this->pass = "Maatwerk";			
-		$this->source = "KingDataDigger_Tibuplas";
+		$this->user = ODBC_TIBUPLAST_USER;
+		$this->pass = ODBC_TIBUPLAST_PASS;			
+		$this->source = ODBC_TIBUPLAST_SOURCE;
 		self::connect();
 	}
 	

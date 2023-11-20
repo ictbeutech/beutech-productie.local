@@ -5,10 +5,9 @@ class ODBC_class_beutech {
 
    // ------- Constructor ------- //
 	function __construct() {
-		$this->user = "Maatwerk";
-		$this->pass = "geheim";			
-		$this->source = "KingDataDigger_Beutech";
-		$this->port = "8081";
+		$this->user = ODBC_BEUTE_USER;
+		$this->pass = ODBC_BEUTE_PASS;			
+		$this->source = ODBC_BEUTE_SOURCE;
 		self::connect();
 	}
 	
