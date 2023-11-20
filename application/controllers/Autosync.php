@@ -20,8 +20,11 @@ class Autosync extends CI_Controller {
 
 
 	// Sync orders Beutech & Tibuplast
-    public function auto_sync_orders()
+    public function auto_sync_orders( )
     {
+
+echo "Sync orders. Using environment: " . ENVIRONMENT . "\n";
+
         $this->orders_model->syncOrders_tibuplast();
 		$this->orders_model->syncOrders_beutech();		
     }
