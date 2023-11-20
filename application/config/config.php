@@ -531,14 +531,17 @@ $config['proxy_ips'] = '';
 
 // Assume we are running in production environment
 $app_environment = 'production';
-// if( is_cli() ) {
+if( is_cli() ) {
 // 	// CLI doesn't have environment variables
 // 	// Check the command parameters to find out what we want to do
 // 	$cli_params = isset( $_SERVER['argv'] ) ? $_SERVER['argv'] : [];
 // 	if( isset( $cli_params[3] ) && !empty( $cli_params[3] ) ) {
 // 		$app_environment = $cli_params[3];
 // 	}
-// }
+
+	echo "CLI";
+	exit();
+}
 if( isset( $_SERVER['CI_ENVIRONMENT'] ) ) {
  	// If the environment variable is set, use its value
  	$app_environment = $_SERVER['CI_ENVIRONMENT'];
