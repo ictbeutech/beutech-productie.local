@@ -91,7 +91,7 @@
 				$r['sub_afdeling'],
 				
 				//$r['klant'],
-				//"<a href='/beutech_productie/orders/".$r['ordernr']."'>" . $r['ordernr'] . " <i class='fas fa-eye'></i></a>",	
+				//"<a href='/orders/".$r['ordernr']."'>" . $r['ordernr'] . " <i class='fas fa-eye'></i></a>",	
 				//$r['opbrgroep'],			
 				//$r['aantal'],
 				//$r['bon'], 
@@ -1296,7 +1296,7 @@ public function afdelingen_werklijst_putten ($week_nr) {
 				$r->status,
 				$r->debiteurnr,
 				$r->klant,
-				"<a href='/beutech_productie/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>",
+				"<a href='/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>",
 				$r->artikelnr,
 				$r->opbrgroep,
 				$r->soort,

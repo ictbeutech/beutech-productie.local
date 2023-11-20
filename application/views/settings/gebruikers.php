@@ -6,7 +6,7 @@
 <!-- Page heading row -->
 <div class="row d-flex justify-content-center border bg-light py-1 mt-0 mb-2">
 	<div class="col my-3 text-center">
-		<a class="btn btn-primary btn-sm" href="/beutech_productie/instellingen" role="button"><i class="fas fa-arrow-left"></i> Terug naar instellingen</a>
+		<a class="btn btn-primary btn-sm" href="/instellingen" role="button"><i class="fas fa-arrow-left"></i> Terug naar instellingen</a>
 	</div>
 </div>
 <!-- END OF - Page heading row -->

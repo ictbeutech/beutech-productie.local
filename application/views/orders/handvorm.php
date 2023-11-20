@@ -25,7 +25,7 @@
 	</div>
 	
 	<div class="col my-2 text-center">
-		<a class="btn btn-secondary btn-sm" href="/beutech_productie/orders" role="button"><i class="fas fa-arrow-left"></i> Terug</a>
+		<a class="btn btn-secondary btn-sm" href="/orders" role="button"><i class="fas fa-arrow-left"></i> Terug</a>
 	</div>
 	
 </div>

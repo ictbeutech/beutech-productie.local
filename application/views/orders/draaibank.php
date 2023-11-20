@@ -10,7 +10,7 @@
 <!-- Page heading row -->
 <div class="row d-flex justify-content-center border-dark bg-dark py-1 mt-0 mb-2">
 	<div class="col my-2 text-center">
-		<a class="btn btn-secondary btn-sm" href="/beutech_productie/voorraad/<?php echo $afdeling_name; ?>" role="button">
+		<a class="btn btn-secondary btn-sm" href="/voorraad/<?php echo $afdeling_name; ?>" role="button">
 			<i class='fas fa-eye'></i> Bekijk voorraad - <?php echo $afdeling_name; ?>
 		</a>
 	</div>
@@ -30,7 +30,7 @@
 	</div>
 	
 	<div class="col my-2 text-center">
-		<a class="btn btn-secondary btn-sm" href="/beutech_productie/orders" role="button"><i class="fas fa-arrow-left"></i> Terug</a>
+		<a class="btn btn-secondary btn-sm" href="/orders" role="button"><i class="fas fa-arrow-left"></i> Terug</a>
 	</div>
 	
 </div>
@@ -467,7 +467,7 @@ $(document).ready(function(){
 					"column":15, //Gewenste datum
 					"type": "datepicker", 
 					"options": {
-						"icon": "/beutech_productie/assets/images/calendar.gif" // Optional
+						"icon": "/assets/images/calendar.gif" // Optional
 					} 
 				}
 			]
@@ -539,7 +539,7 @@ $(document).ready(function(){
 					"column":15, //Gewenste datum
 					"type": "datepicker", 
 					"options": {
-						"icon": "/beutech_productie/assets/images/calendar.gif" // Optional
+						"icon": "/assets/images/calendar.gif" // Optional
 					} 
 				}
 			]

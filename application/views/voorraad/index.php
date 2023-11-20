@@ -16,7 +16,7 @@
 			</form>
 		</div>
 		<div class="col my-2 text-center">
-			<a class="btn btn-secondary btn-sm" href="/beutech_productie/voorraad/alles" role="button">
+			<a class="btn btn-secondary btn-sm" href="/voorraad/alles" role="button">
 				<i class='fas fa-eye'></i> Bekijk voorraad Beutech
 			</a>
 		</div>
