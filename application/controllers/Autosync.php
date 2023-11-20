@@ -1,12 +1,12 @@
 <?php
 class Autosync extends CI_Controller {
-	
+
 	// King Webservices
 	public $king_webservices_beutech = array(
-		'webservices_protocol'			=> 'http',
-		'webservices_host'				=> '192.168.65.11',
-		'webservices_poort'				=> '8081',
-		'webservices_administratie'		=> 'Beutech'
+		'webservices_protocol'			=> WEBSERVICES_PROTOCOL,
+		'webservices_host'				=> WEBSERVICES_HOST,
+		'webservices_poort'				=> WEBSERVICES_POORT,
+		'webservices_administratie'		=> WEBSERVICES_ADMINISTRATIE
 	);
 	
 	public function __construct(){

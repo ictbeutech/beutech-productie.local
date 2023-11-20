@@ -387,7 +387,8 @@ $config['sess_save_path'] = NULL;
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 43200;
 $config['sess_regenerate_destroy'] = FALSE;
-$config['cookie_domain'] = 'http://dev.beutech.local:8080/beutech_productie/';
+// $config['cookie_domain'] = 'http://dev.beutech.local:8080/beutech_productie/';
+$config['cookie_domain'] = '/beutech_productie/';
 //$config['cookie_path'] = '/beutech_productie/';
 
 /*
@@ -526,3 +527,52 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+
+// Assume we are running in production environment
+$app_environment = 'production';
+// if( is_cli() ) {
+// 	// CLI doesn't have environment variables
+// 	// Check the command parameters to find out what we want to do
+// 	$cli_params = isset( $_SERVER['argv'] ) ? $_SERVER['argv'] : [];
+// 	if( isset( $cli_params[3] ) && !empty( $cli_params[3] ) ) {
+// 		$app_environment = $cli_params[3];
+// 	}
+// }
+if( isset( $_SERVER['CI_ENVIRONMENT'] ) ) {
+ 	// If the environment variable is set, use its value
+ 	$app_environment = $_SERVER['CI_ENVIRONMENT'];
+}
+
+if($app_environment == 'development') {
+	$config['base_url'] = 'http://beutech-productie.plusdev.nl';
+	$config['cookie_domain'] = 'http://beutech-productie.plusdev.nl';
+
+	// King Webservices
+	define( 'WEBSERVICES_PROTOCOL',			=> 'http' );
+	define( 'WEBSERVICES_HOST',				=> '127.0.0.1' );
+	define( 'WEBSERVICES_POORT',			=> '8080' );)
+	define( 'WEBSERVICES_ADMINISTRATIE',	=> 'Beutech_dev' );
+}
+elseif($app_environment == 'staging') {
+	$config['base_url'] = 'http://staging.beutech-productie.local';
+	$config['cookie_domain'] = 'http://staging.beutech-productie.local/';
+	
+	// King Webservices
+	define( 'WEBSERVICES_PROTOCOL',			=> 'http' );
+	define( 'WEBSERVICES_HOST',				=> '192.168.65.11' );
+	define( 'WEBSERVICES_POORT',			=> '8081' );)
+	define( 'WEBSERVICES_ADMINISTRATIE',	=> 'Beutech_Staging' );
+}
+else {
+	$config['base_url'] = 'http://beutech-productie.local';
+	$config['cookie_domain'] = 'http://beutech-productie.local/';
+	
+	// King Webservices
+	define( 'WEBSERVICES_PROTOCOL',			=> 'http' );
+	define( 'WEBSERVICES_HOST',				=> '192.168.65.11' );
+	define( 'WEBSERVICES_POORT',			=> '8081' );)
+	define( 'WEBSERVICES_ADMINISTRATIE',	=> 'Beutech' );
+}
+
+

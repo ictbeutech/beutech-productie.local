@@ -122,7 +122,7 @@
 					$r['sub_afdeling'],
 					
 					//$r['klant'],
-					//"<a href='/beutech_productie_test/orders/".$r['ordernr']."'>" . $r['ordernr'] . " <i class='fas fa-eye'></i></a>",	
+					//"<a href='/orders/".$r['ordernr']."'>" . $r['ordernr'] . " <i class='fas fa-eye'></i></a>",	
 					//$r['opbrgroep'],			
 					//$r['aantal'],
 					//$r['bon'], 
@@ -2322,7 +2322,7 @@
 			//Check if artikelnr is eindproduct
 			$recept = $this->recepten_model->getRecept($r->artikelnr);
 			if(isset($recept) && !empty($recept)){
-				$recept = "<a href='/beutech_productie/recepten/".$r->artikelnr."'>" . $r->artikelnr . " <i class='fas fa-eye'></i></a>";
+				$recept = "<a href='/recepten/".$r->artikelnr."'>" . $r->artikelnr . " <i class='fas fa-eye'></i></a>";
 			}else{
 				$recept = "nvt";
 			}
@@ -2341,7 +2341,7 @@
 					$r->status,
 					$r->debiteurnr,
 					$r->klant,
-					"<a href='/beutech_productie/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
+					"<a href='/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
 					$r->artikelnr,
 					$r->opbrgroep,
 					$r->soort,
@@ -2382,7 +2382,7 @@
 					$r->status,
 					$r->debiteurnr,
 					$r->klant,
-					"<a href='/beutech_productie/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
+					"<a href='/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
 					$r->artikelnr,
 					$r->opbrgroep,
 					$r->soort,
@@ -2437,7 +2437,7 @@
 					$status,
 					$r->debiteurnr,
 					$r->klant,
-					"<a href='/beutech_productie/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
+					"<a href='/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
 					$r->artikelnr,
 					$r->opbrgroep,
 					$r->soort,
@@ -2509,7 +2509,7 @@
 					$status,
 					$r->debiteurnr,
 					$r->klant,
-					"<a href='/beutech_productie/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
+					"<a href='/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
 					$r->artikelnr,
 					$r->opbrgroep,
 					$r->soort,
@@ -2548,7 +2548,7 @@
 					$r->status,
 					$r->debiteurnr,
 					$r->klant,
-					"<a href='/beutech_productie/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
+					"<a href='/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
 					$r->artikelnr,
 					$r->opbrgroep,
 					$r->soort,
@@ -2589,7 +2589,7 @@
 					$r->status,
 					$r->debiteurnr,
 					$r->klant,
-					"<a href='/beutech_productie/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
+					"<a href='/orders/".$r->ordernr."'>" . $r->ordernr . " <i class='fas fa-eye'></i></a>" . $show_lock,
 					$r->artikelnr,
 					$r->opbrgroep,
 					$r->soort,

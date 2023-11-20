@@ -94,3 +94,75 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+
+$db['staging'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost:3306',
+	'username' => 'tibuplast_dbuser',
+	'password' => '8AN38egvWKSFmkMN',
+	'database' => 'staging_beutech_productie',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+
+$db['development'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost:3306',
+	'username' => 'tibuplast_dbuser',
+	'password' => '8AN38egvWKSFmkMN',
+	'database' => 'dev_beutech_productie',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+
+
+
+// Assume we are running in production environment
+$app_environment = 'production';
+// if( is_cli() ) {
+// 	// CLI doesn't have environment variables
+// 	// Check the command parameters to find out what we want to do
+// 	$cli_params = isset( $_SERVER['argv'] ) ? $_SERVER['argv'] : [];
+// 	if( isset( $cli_params[3] ) && !empty( $cli_params[3] ) ) {
+// 		$app_environment = $cli_params[3];
+// 	}
+// }
+if( isset( $_SERVER['CI_ENVIRONMENT'] ) ) {
+ 	// If the environment variable is set, use its value
+ 	$app_environment = $_SERVER['CI_ENVIRONMENT'];
+}
+
+if($app_environment == 'development') {
+	$active_group = 'development';
+}
+elseif($app_environment == 'staging') {
+	$active_group = 'staging';
+}
+else {
+	$active_group = 'default';
+}
