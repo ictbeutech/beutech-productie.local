@@ -551,7 +551,7 @@ if($app_environment == 'development') {
 	// King Webservices
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
 	define( 'WEBSERVICES_HOST',				'127.0.0.1' );
-	define( 'WEBSERVICES_POORT',			'8080' );)
+	define( 'WEBSERVICES_POORT',			'8080' );
 	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech_dev' );
 }
 elseif($app_environment == 'staging') {
@@ -561,7 +561,7 @@ elseif($app_environment == 'staging') {
 	// King Webservices
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
 	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
-	define( 'WEBSERVICES_POORT',			'8081' );)
+	define( 'WEBSERVICES_POORT',			'8081' );
 	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech_Staging' );
 }
 else {
@@ -571,7 +571,7 @@ else {
 	// King Webservices
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
 	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
-	define( 'WEBSERVICES_POORT',			'8081' );)
+	define( 'WEBSERVICES_POORT',			'8081' );
 	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech' );
 }
 
