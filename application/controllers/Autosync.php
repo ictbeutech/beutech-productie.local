@@ -24,7 +24,8 @@ class Autosync extends CI_Controller {
     {
 
 echo "Sync orders. Using environment: " . ENVIRONMENT . "\n";
-
+print_r( $this->king_webservices_beutech );
+exit();
         $this->orders_model->syncOrders_tibuplast();
 		$this->orders_model->syncOrders_beutech();		
     }
