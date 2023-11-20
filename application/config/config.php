@@ -603,7 +603,7 @@ else {
 	define( 'ODBC_TIBUPLAST_SOURCE',	"KingDataDigger_Tibuplas" );
 	
 	define( 'ODBC_BEUTE_USER',			"Maatwerk" );
-	define( 'ODBC_BEUTE_PASS',			"geheim" );			
+	define( 'ODBC_BEUTE_PASS',			"o0dbcBKB!" );			
 	define( 'ODBC_BEUTE_SOURCE',		"KingDataDigger_BeuteKB" );
 
 	if( !defined( 'ENVIRONMENT' ) ) {
