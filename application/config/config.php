@@ -538,11 +538,8 @@ if( is_cli() ) {
  	if( isset( $cli_params[3] ) && !empty( $cli_params[3] ) ) {
  		$app_environment = $cli_params[3];
  	}
-
-	echo "Environment: " . $app_environment;
-	exit();
 }
-if( isset( $_SERVER['CI_ENVIRONMENT'] ) ) {
+elseif( isset( $_SERVER['CI_ENVIRONMENT'] ) ) {
  	// If the environment variable is set, use its value
  	$app_environment = $_SERVER['CI_ENVIRONMENT'];
 }
