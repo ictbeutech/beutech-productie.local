@@ -553,6 +553,10 @@ if($app_environment == 'development') {
 	define( 'WEBSERVICES_HOST',				'127.0.0.1' );
 	define( 'WEBSERVICES_POORT',			'8080' );
 	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech_dev' );
+	
+	if( !defined( 'ENVIRONMENT' ) ) {
+		define('ENVIRONMENT', 'development');
+	}
 }
 elseif($app_environment == 'staging') {
 	$config['base_url'] = 'http://staging.beutech-productie.local';
@@ -563,6 +567,10 @@ elseif($app_environment == 'staging') {
 	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
 	define( 'WEBSERVICES_POORT',			'8081' );
 	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech_Staging' );
+
+	if( !defined( 'ENVIRONMENT' ) ) {
+		define('ENVIRONMENT', 'staging');
+	}
 }
 else {
 	$config['base_url'] = 'http://beutech-productie.local';
@@ -573,6 +581,10 @@ else {
 	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
 	define( 'WEBSERVICES_POORT',			'8081' );
 	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech' );
+
+	if( !defined( 'ENVIRONMENT' ) ) {
+		define('ENVIRONMENT', 'production');
+	}
 }
 
 
