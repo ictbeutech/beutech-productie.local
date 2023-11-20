@@ -15,7 +15,7 @@ class Autosync extends CI_Controller {
 		$this->load->model('voorraad_model');
 		$this->load->model('recepten_model');
 		$this->load->model('productie_model');
-		$this->load->library('kingwebservices');
+		$this->load->library('KingWebservices');
 	}
 
 
