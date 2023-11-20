@@ -549,30 +549,30 @@ if($app_environment == 'development') {
 	$config['cookie_domain'] = 'http://beutech-productie.plusdev.nl';
 
 	// King Webservices
-	define( 'WEBSERVICES_PROTOCOL',			=> 'http' );
-	define( 'WEBSERVICES_HOST',				=> '127.0.0.1' );
-	define( 'WEBSERVICES_POORT',			=> '8080' );)
-	define( 'WEBSERVICES_ADMINISTRATIE',	=> 'Beutech_dev' );
+	define( 'WEBSERVICES_PROTOCOL',			'http' );
+	define( 'WEBSERVICES_HOST',				'127.0.0.1' );
+	define( 'WEBSERVICES_POORT',			'8080' );)
+	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech_dev' );
 }
 elseif($app_environment == 'staging') {
 	$config['base_url'] = 'http://staging.beutech-productie.local';
 	$config['cookie_domain'] = 'http://staging.beutech-productie.local/';
 	
 	// King Webservices
-	define( 'WEBSERVICES_PROTOCOL',			=> 'http' );
-	define( 'WEBSERVICES_HOST',				=> '192.168.65.11' );
-	define( 'WEBSERVICES_POORT',			=> '8081' );)
-	define( 'WEBSERVICES_ADMINISTRATIE',	=> 'Beutech_Staging' );
+	define( 'WEBSERVICES_PROTOCOL',			'http' );
+	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
+	define( 'WEBSERVICES_POORT',			'8081' );)
+	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech_Staging' );
 }
 else {
 	$config['base_url'] = 'http://beutech-productie.local';
 	$config['cookie_domain'] = 'http://beutech-productie.local/';
 	
 	// King Webservices
-	define( 'WEBSERVICES_PROTOCOL',			=> 'http' );
-	define( 'WEBSERVICES_HOST',				=> '192.168.65.11' );
-	define( 'WEBSERVICES_POORT',			=> '8081' );)
-	define( 'WEBSERVICES_ADMINISTRATIE',	=> 'Beutech' );
+	define( 'WEBSERVICES_PROTOCOL',			'http' );
+	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
+	define( 'WEBSERVICES_POORT',			'8081' );)
+	define( 'WEBSERVICES_ADMINISTRATIE',	'Beutech' );
 }
 
 
