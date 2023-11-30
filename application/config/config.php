@@ -574,7 +574,7 @@ elseif($app_environment == 'staging') {
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
 	define( 'WEBSERVICES_HOST',				'192.168.65.11' );
 	define( 'WEBSERVICES_POORT',			'8081' );
-	define( 'WEBSERVICES_ADMINISTRATIE',	'TEST0001' );
+	define( 'WEBSERVICES_ADMINISTRATIE',	'Test0001' );
 
 	define( 'ODBC_TIBUPLAST_USER',		"Maatwerk" );
 	define( 'ODBC_TIBUPLAST_PASS',		"o0dbcBKB!" );			
@@ -582,7 +582,7 @@ elseif($app_environment == 'staging') {
 	
 	define( 'ODBC_BEUTE_USER',			"Maatwerk" );
 	define( 'ODBC_BEUTE_PASS',			"o0dbcBKB!" );			
-	define( 'ODBC_BEUTE_SOURCE',		"KingDataDigger_TEST0001" );
+	define( 'ODBC_BEUTE_SOURCE',		"KingDataDigger_Test0001" );
 
 	if( !defined( 'ENVIRONMENT' ) ) {
 		define('ENVIRONMENT', 'staging');
