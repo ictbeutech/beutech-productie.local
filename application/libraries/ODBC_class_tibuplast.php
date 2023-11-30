@@ -20,7 +20,7 @@ class ODBC_class_tibuplast {
 			$this->source,
 			$this->user,
 			$this->pass
-		) or die ("Kan niet inloggen, controleer credentials");
+		) or die ("Kan niet inloggen, controleer credentials<br>Source: " . $this->source . "<br>User: " . $this->user . "<br>Pass: " . $this->pass );
 		 //echo "INGELOGD";
 	}
 	
