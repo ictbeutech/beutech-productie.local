@@ -1,0 +1,31 @@
+
+A PHP Error was encountered
+
+Severity:    Warning
+Message:     odbc_exec(): SQL error: [SAP][ODBC Driver][SQL Anywhere]Column 'vrART000000Veld28' not found, SQL state S0002 in SQLExecDirect
+Filename:    /var/www/staging_beutech_productie/application/libraries/ODBC_class_beutech.php
+Line Number: 31
+
+Backtrace:
+	File: /var/www/staging_beutech_productie/application/libraries/ODBC_class_beutech.php
+	Line: 31
+	Function: odbc_exec
+
+	File: /var/www/staging_beutech_productie/application/libraries/ODBC_class_beutech.php
+	Line: 45
+	Function: query
+
+	File: /var/www/staging_beutech_productie/application/models/Voorraad_model.php
+	Line: 120
+	Function: results
+
+	File: /var/www/staging_beutech_productie/application/controllers/Autosync.php
+	Line: 33
+	Function: syncVoorraad_beutech
+
+	File: /var/www/staging_beutech_productie/index.php
+	Line: 332
+	Function: require_once
+
+
+S0002

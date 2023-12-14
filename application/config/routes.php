@@ -74,6 +74,6 @@ $route['orders/handvorm_2'] = 'orders/view_handvorm_2';
 $route['orders/(:any)'] = 'orders/view/$1';
 $route['orders'] = 'orders';
 //Pages
-$route['(:any)'] = 'pages/view/$1';
+$route['(:any)'] = 'Pages/view/$1';
 //Default
 $route['default_controller'] = 'Login';

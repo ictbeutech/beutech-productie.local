@@ -1,0 +1,35 @@
+Tibuplast Up-to-date - 110
+Tibuplast Nieuw - 0
+Tibuplast Update - 13
+Tibuplast Delete - 9
+
+A PHP Error was encountered
+
+Severity:    Warning
+Message:     odbc_exec(): SQL error: [SAP][ODBC Driver][SQL Anywhere]Column 'vrART000000Veld19' not found, SQL state S0002 in SQLExecDirect
+Filename:    /var/www/staging_beutech_productie/application/libraries/ODBC_class_beutech.php
+Line Number: 31
+
+Backtrace:
+	File: /var/www/staging_beutech_productie/application/libraries/ODBC_class_beutech.php
+	Line: 31
+	Function: odbc_exec
+
+	File: /var/www/staging_beutech_productie/application/libraries/ODBC_class_beutech.php
+	Line: 45
+	Function: query
+
+	File: /var/www/staging_beutech_productie/application/models/Orders_model.php
+	Line: 1435
+	Function: results
+
+	File: /var/www/staging_beutech_productie/application/controllers/Autosync.php
+	Line: 26
+	Function: syncOrders_beutech
+
+	File: /var/www/staging_beutech_productie/index.php
+	Line: 332
+	Function: require_once
+
+
+S0002

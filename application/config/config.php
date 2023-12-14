@@ -388,7 +388,7 @@ $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 43200;
 $config['sess_regenerate_destroy'] = FALSE;
 // $config['cookie_domain'] = 'http://dev.beutech.local:8080/beutech_productie/';
-$config['cookie_domain'] = '/beutech_productie/';
+// $config['cookie_domain'] = '';
 //$config['cookie_path'] = '/beutech_productie/';
 
 /*
@@ -546,7 +546,7 @@ elseif( isset( $_SERVER['CI_ENVIRONMENT'] ) ) {
 
 if($app_environment == 'development') {
 	$config['base_url'] = 'http://beutech-productie.plusdev.nl';
-	$config['cookie_domain'] = 'http://beutech-productie.plusdev.nl';
+	$config['cookie_domain'] = 'beutech-productie.plusdev.nl';
 
 	// King Webservices
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
@@ -568,7 +568,7 @@ if($app_environment == 'development') {
 }
 elseif($app_environment == 'staging') {
 	$config['base_url'] = 'http://staging.beutech-productie.local';
-	$config['cookie_domain'] = 'http://staging.beutech-productie.local/';
+	$config['cookie_domain'] = 'staging.beutech-productie.local';
 	
 	// King Webservices
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
@@ -590,7 +590,7 @@ elseif($app_environment == 'staging') {
 }
 else {
 	$config['base_url'] = 'http://beutech-productie.local';
-	$config['cookie_domain'] = 'http://beutech-productie.local/';
+	$config['cookie_domain'] = 'beutech-productie.local';
 	
 	// King Webservices
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
