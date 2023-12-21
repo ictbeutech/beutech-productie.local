@@ -2219,7 +2219,6 @@
 		$afdeling_filter = $this->input->post("afdeling_filter");
 		$sub_afdeling_filter = $this->input->post("sub_afdeling_filter");
 		$exclude_sub_afdeling_filter = $this->input->post("exclude_sub_afdeling_filter");
-		
 		$week_klaar = $this->input->post("week_klaar");
 				
 		if(empty($overzicht)) {

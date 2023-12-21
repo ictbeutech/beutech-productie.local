@@ -493,6 +493,7 @@ class Orders_model extends CI_Model { // Orders Model class
 	function syncOrders_tibuplast(){ //Sync orders Tibuplast
 		
 		$odbc = new ODBC_class_tibuplast(); //Connect to King ODBC
+		$vrije_rubrieken = $this->get_vrije_rubriek_naam_en_labels( $odbc );
 		
 		//Get today date
 		$datum_start = new datetime();
@@ -508,6 +509,10 @@ class Orders_model extends CI_Model { // Orders Model class
 		$date_lock = $date_lock->format('Y-12-31');
 		
 		//Get all 'openstaande orders" from King
+		//
+		// VrART000000Veld119	Afdeling
+		// VrART000000Veld120	Subafdeling
+		// VrART000000Veld121	Productietijd
 		$sql="
 			SELECT
 				ork.OrkNawGid,
@@ -520,9 +525,9 @@ class Orders_model extends CI_Model { // Orders Model class
 				naw.VAdrNaam1,
 				art.ArtCode,
 				art.ArtOpbrGrpGId,
-				avr.VrART000000Veld119,
-				avr.VrART000000Veld120,
-				avr.VrART000000Veld121,
+				avr." . $vrije_rubrieken['Afdeling'] . ",
+				avr." . $vrije_rubrieken['Subafdeling'] . ",
+				avr." . $vrije_rubrieken['Productietijd'] . ",
 				opb.OpbrGrpNummer,
 				orr.OrrGid,
 				orr.OrrArtGid,
@@ -556,9 +561,9 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum >= 
 					(                       
 						CASE 
-							WHEN avr.VrART000000Veld119 = 'Draaibank' THEN '2000-01-01'
-							WHEN avr.VrART000000Veld119 = 'Handvorm' THEN '2000-01-01'	
-							WHEN avr.VrART000000Veld119 = 'Putten' THEN '2000-01-01'								
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2000-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2000-01-01'	
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Putten' THEN '2000-01-01'								
 							ELSE '{$datum_start}' 
 						END
 					)	
@@ -566,8 +571,8 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum <= 	
 					(                       
 						CASE 
-							WHEN avr.VrART000000Veld119 = 'Draaibank' THEN '2080-01-01'
-							WHEN avr.VrART000000Veld119 = 'Handvorm' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01'
 							ELSE '{$datum_eind}' 
 						END
 					)
@@ -575,15 +580,15 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum != 
 					(                       
 						CASE 
-							WHEN avr.VrART000000Veld119 = 'Draaibank' THEN '2080-01-01'
-							WHEN avr.VrART000000Veld119 = 'Handvorm' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01'
 							ELSE '{$date_lock}' 
 						END
 					)
 			AND
 				ork.Orkleverdatum IS NOT NULL	
 			AND
-				((avr.VrART000000Veld119 != 'Niet synchroniseren' AND orr.OrrRegelsoort = 2) OR orr.OrrRegelsoort != 2)		
+				((avr." . $vrije_rubrieken['Afdeling'] . " != 'Niet synchroniseren' AND orr.OrrRegelsoort = 2) OR orr.OrrRegelsoort != 2)		
 			ORDER BY
 				ork.Orkleverdatum ASC, ork.OrkNummer ASC, orr.OrrRegelnr ASC
 		";
@@ -591,7 +596,7 @@ class Orders_model extends CI_Model { // Orders Model class
 		$sql_2_tibuplast="
 			SELECT
 				orr.OrrGid,
-				avr.VrART000000Veld119
+				avr." . $vrije_rubrieken['Afdeling'] . "
 			FROM 
 				KingSystem.tabOrderKop ork
 				LEFT JOIN KingSystem.tabOrderRegel orr ON ork.OrkGid = orr.OrrOrkGid
@@ -601,9 +606,9 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum >= 
 					(                       
 						CASE 
-							WHEN avr.VrART000000Veld119 = 'Draaibank' THEN '2000-01-01' 
-							WHEN avr.VrART000000Veld119 = 'Handvorm' THEN '2000-01-01'
-							WHEN avr.VrART000000Veld119 = 'Putten' THEN '2000-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2000-01-01' 
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2000-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Putten' THEN '2000-01-01'
 							ELSE '{$datum_start}' 
 						END
 					)
@@ -611,8 +616,8 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum <= 	
 					(                       
 						CASE 
-							WHEN avr.VrART000000Veld119 = 'Draaibank' THEN '2080-01-01' 
-							WHEN avr.VrART000000Veld119 = 'Handvorm' THEN '2080-01-01' 
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2080-01-01' 
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01' 
 							ELSE '{$datum_eind}' 
 						END
 					)
@@ -620,8 +625,8 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum != 
 					(                       
 						CASE 
-							WHEN avr.VrART000000Veld119 = 'Draaibank' THEN '2080-01-01'
-							WHEN avr.VrART000000Veld119 = 'Handvorm' THEN '2080-01-01'							
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01'							
 							ELSE '{$date_lock}' 
 						END
 					)					
@@ -646,18 +651,23 @@ class Orders_model extends CI_Model { // Orders Model class
 			$count_nothing_tibuplast = 0;
 			
 			foreach($orders as $order){ //Loop through orderregels from OBDC result
-				
+
 				//Set administratie & vrijerubrieken
 				$administratie = "Tibuplast";
-				$afdeling_code = $order->VrART000000Veld119;
-				$sub_afdeling_code = $order->VrART000000Veld120;
+				
+				$key = $vrije_rubrieken['Afdeling'];
+				$afdeling_code = $order->$key;
+
+				$key = $vrije_rubrieken['Subafdeling'];
+				$sub_afdeling_code = $order->$key;
 				$debiteur_gid = $order->OrkNawGid;
 				$debiteurnr = $order->NawFilNummer;
 				
 				//Set productie uren
-				$productie_minuten = $order->VrART000000Veld121;
+				$key = $vrije_rubrieken['Productietijd'];
+				$productie_minuten = $order->$key;
 				$aantal_orderregel = $order->OrrAantalLeveringVrrdEenh;
-				
+
 				if(!empty($productie_minuten)){
 					$productie_minuten = $aantal_orderregel * $productie_minuten;
 					$productie_uren = round(($productie_minuten / 60), 2) ;
@@ -720,7 +730,7 @@ class Orders_model extends CI_Model { // Orders Model class
 				$order_last_modified_king = system_to_euro_date_time($order_last_modified_king);
 				$orderregel_last_modified_king = system_to_euro_date_time($orderregel_last_modified_king);
 				
-				//if($add_to_db == 0){ //IF orderregel exists -> UPDATE ALL
+				// if($add_to_db == 0){ //IF orderregel exists -> UPDATE ALL
 				if(($add_to_db == 0) && (($order_last_modified_king != $lastupdate_king) || ($orderregel_last_modified_king != $lastupdate_regel_king))){ //IF orderregel exists but last update is not equal then update row
 				
 					$update_db = 1;
@@ -1292,10 +1302,30 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	} //END OF - Sync orders Tibuplast
 	
+	function get_vrije_rubriek_naam_en_labels( $odbc, $bestandOms = 'ART' ) {
+		$vr_indexed = [];
+		
+		$sql = "SELECT 
+					vr.VrLabel, 
+					vr.VrVeldnaam 
+				FROM 
+					KingSystem.tabVrijeRubrieken vr 
+				WHERE 
+					vr.VrBestandOms = '" . $bestandOms . "';";
+		$vrije_rubrieken = $odbc->results($sql);
+		if( !empty( $vrije_rubrieken ) ) {
+			foreach( $vrije_rubrieken as $vrije_rubriek ) {
+				$vr_indexed[ $vrije_rubriek->VrLabel ] = $vrije_rubriek->VrVeldnaam;
+			}
+		}
+		
+		return $vr_indexed;
+	}
 	
 	function syncOrders_beutech(){ //Sync orders Beutech
 		
 		$odbc = new ODBC_class_beutech(); //Connect to King ODBC
+		$vrije_rubrieken = $this->get_vrije_rubriek_naam_en_labels( $odbc );
 		
 		//Get today date
 		$datum_start = new datetime();
@@ -1311,6 +1341,9 @@ class Orders_model extends CI_Model { // Orders Model class
 		$date_lock = $date_lock->format('Y-12-31');
 		
 		//Get all 'openstaande orders" from King
+		// 	avr.vrART000000Veld19		Vrije rubriek 'Afdeling'
+		// 	avr.vrART000000Veld20		Vrije rubriek 'Subafdeling'
+		// 	avr.vrART000000Veld21		Vrije rubriek 'Productietijd'
 		$sql="
 			SELECT
 				ork.OrkNawGid,
@@ -1323,9 +1356,9 @@ class Orders_model extends CI_Model { // Orders Model class
 				naw.VAdrNaam1,
 				art.ArtCode,
 				art.ArtOpbrGrpGId,
-				avr.vrART000000Veld19,
-				avr.vrART000000Veld20,
-				avr.vrART000000Veld21,
+				avr." . $vrije_rubrieken['Afdeling'] . ",
+				avr." . $vrije_rubrieken['Subafdeling'] . ",
+				avr." . $vrije_rubrieken['Productietijd'] . ",
 				opb.OpbrGrpNummer,
 				orr.OrrGid,
 				orr.OrrArtGid,
@@ -1359,9 +1392,9 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum >= 
 					(                       
 						CASE 
-							WHEN avr.vrART000000Veld19 = 'Draaibank' THEN '2000-01-01'
-							WHEN avr.vrART000000Veld19 = 'Handvorm' THEN '2000-01-01'	
-							WHEN avr.vrART000000Veld19 = 'Putten' THEN '2000-01-01'								
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2000-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2000-01-01'	
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Putten' THEN '2000-01-01'								
 							ELSE '{$datum_start}' 
 						END
 					)	
@@ -1369,8 +1402,8 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum <= 	
 					(                       
 						CASE 
-							WHEN avr.vrART000000Veld19 = 'Draaibank' THEN '2080-01-01'
-							WHEN avr.vrART000000Veld19 = 'Handvorm' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01'
 							ELSE '{$datum_eind}' 
 						END
 					)
@@ -1378,15 +1411,15 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum != 
 					(                       
 						CASE 
-							WHEN avr.vrART000000Veld19 = 'Draaibank' THEN '2080-01-01'
-							WHEN avr.vrART000000Veld19 = 'Handvorm' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01'
 							ELSE '{$date_lock}' 
 						END
 					)
 			AND
 				ork.Orkleverdatum IS NOT NULL	
 			AND
-				((avr.vrART000000Veld19 != 'Niet synchroniseren' AND orr.OrrRegelsoort = 2) OR orr.OrrRegelsoort != 2)		
+				((avr." . $vrije_rubrieken['Afdeling'] . " != 'Niet synchroniseren' AND orr.OrrRegelsoort = 2) OR orr.OrrRegelsoort != 2)		
 			ORDER BY
 				ork.Orkleverdatum ASC, ork.OrkNummer ASC, orr.OrrRegelnr ASC
 		";
@@ -1394,7 +1427,7 @@ class Orders_model extends CI_Model { // Orders Model class
 		$sql_2_beutech="
 			SELECT
 				orr.OrrGid,
-				avr.vrART000000Veld19
+				avr." . $vrije_rubrieken['Afdeling'] . "
 			FROM 
 				KingSystem.tabOrderKop ork
 				LEFT JOIN KingSystem.tabOrderRegel orr ON ork.OrkGid = orr.OrrOrkGid
@@ -1404,9 +1437,9 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum >= 
 					(                       
 						CASE 
-							WHEN avr.vrART000000Veld19 = 'Draaibank' THEN '2000-01-01' 
-							WHEN avr.vrART000000Veld19 = 'Handvorm' THEN '2000-01-01'
-							WHEN avr.vrART000000Veld19 = 'Putten' THEN '2000-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2000-01-01' 
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2000-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Putten' THEN '2000-01-01'
 							ELSE '{$datum_start}' 
 						END
 					)
@@ -1414,8 +1447,8 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum <= 	
 					(                       
 						CASE 
-							WHEN avr.vrART000000Veld19 = 'Draaibank' THEN '2080-01-01' 
-							WHEN avr.vrART000000Veld19 = 'Handvorm' THEN '2080-01-01' 
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2080-01-01' 
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01' 
 							ELSE '{$datum_eind}' 
 						END
 					)
@@ -1423,15 +1456,15 @@ class Orders_model extends CI_Model { // Orders Model class
 				ork.Orkleverdatum != 
 					(                       
 						CASE 
-							WHEN avr.vrART000000Veld19 = 'Draaibank' THEN '2080-01-01'
-							WHEN avr.vrART000000Veld19 = 'Handvorm' THEN '2080-01-01'							
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2080-01-01'
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01'							
 							ELSE '{$date_lock}' 
 						END
 					)					
 			ORDER BY
 				orr.OrrGid ASC
 		";
-		
+
 		if($orders = $odbc->results($sql)){ //If ODBC results: proceed
 
 			//Get array -> unique orderregel ID for all rows from local database
@@ -1450,13 +1483,18 @@ class Orders_model extends CI_Model { // Orders Model class
 				
 				//Set administratie & vrijerubrieken
 				$administratie = "Beutech";
-				$afdeling_code = $order->vrART000000Veld19;
-				$sub_afdeling_code = $order->vrART000000Veld20;
+				
+				$key = $vrije_rubrieken['Afdeling'];
+				$afdeling_code = $order->$key;
+
+				$key = $vrije_rubrieken['Subafdeling'];
+				$sub_afdeling_code = $order->$key;
 				$debiteur_gid = $order->OrkNawGid;
 				$debiteurnr = $order->NawFilNummer;
 				
 				//Set productie uren
-				$productie_minuten = $order->vrART000000Veld21;
+				$key = $vrije_rubrieken['Productietijd'];
+				$productie_minuten = $order->$key;
 				$aantal_orderregel = $order->OrrAantalLeveringVrrdEenh;
 				
 				if(!empty($productie_minuten)){
@@ -1519,7 +1557,7 @@ class Orders_model extends CI_Model { // Orders Model class
 				$order_last_modified_king = system_to_euro_date_time($order_last_modified_king);
 				$orderregel_last_modified_king = system_to_euro_date_time($orderregel_last_modified_king);
 				
-				//if($add_to_db == 0){ //IF orderregel exists -> UPDATE ALL
+				// if($add_to_db == 0){ //IF orderregel exists -> UPDATE ALL
 				if(($add_to_db == 0) && (($order_last_modified_king != $lastupdate_king) || ($orderregel_last_modified_king != $lastupdate_regel_king))){ //IF orderregel exists but last update is not equal then update row
 				
 					$update_db = 1;
