@@ -730,8 +730,8 @@ class Orders_model extends CI_Model { // Orders Model class
 				$order_last_modified_king = system_to_euro_date_time($order_last_modified_king);
 				$orderregel_last_modified_king = system_to_euro_date_time($orderregel_last_modified_king);
 				
-				if($add_to_db == 0){ //IF orderregel exists -> UPDATE ALL
-				//if(($add_to_db == 0) && (($order_last_modified_king != $lastupdate_king) || ($orderregel_last_modified_king != $lastupdate_regel_king))){ //IF orderregel exists but last update is not equal then update row
+				//if($add_to_db == 0){ //IF orderregel exists -> UPDATE ALL
+				if(($add_to_db == 0) && (($order_last_modified_king != $lastupdate_king) || ($orderregel_last_modified_king != $lastupdate_regel_king))){ //IF orderregel exists but last update is not equal then update row
 				
 					$update_db = 1;
 					
