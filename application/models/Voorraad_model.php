@@ -151,7 +151,9 @@ class Voorraad_model extends CI_Model { // Voorraad Model class
 			WHERE
 				voorraad_sync = 1
 		";
-		
+
+echo $sql ;
+exit();
 		if($voorraad = $odbc->results($sql)){ //If ODBC results: proceed
 			
 			//Delete all voorraad for fresh info from King
