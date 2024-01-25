@@ -80,11 +80,46 @@ class Voorraad_model extends CI_Model { // Voorraad Model class
 		
 	} // END OF - Get all voorraad with debiteur for afdeling
 	
+	function get_vrije_rubriek_naam_en_labels( $odbc, $bestandOms = 'ART' ) {
+		$vr_indexed = [];
+		
+		$sql = "SELECT 
+					vr.VrLabel, 
+					vr.VrVeldnaam 
+				FROM 
+					KingSystem.tabVrijeRubrieken vr 
+				WHERE 
+					vr.VrBestandOms = '" . $bestandOms . "';";
+		$vrije_rubrieken = $odbc->results($sql);
+		if( !empty( $vrije_rubrieken ) ) {
+			foreach( $vrije_rubrieken as $vrije_rubriek ) {
+				$vr_indexed[ $vrije_rubriek->VrLabel ] = $vrije_rubriek->VrVeldnaam;
+			}
+		}
+		
+		return $vr_indexed;
+	}
 	
 	function syncVoorraad_beutech(){ //Sync voorraad Beutech
 		
 		$odbc = new ODBC_class_beutech(); //Connect to King ODBC
+		$vrije_rubrieken = $this->get_vrije_rubriek_naam_en_labels( $odbc );
 
+		// vrART000000Veld28	Voorraad sync
+		// vrART000000Veld29	Voorraad tonen
+		// vrART000000Veld32	Voorraad dvb
+		// vrART000000Veld31	Voorraad draaibank
+		// vrART000000Veld33	Voorraad extrusie
+		// vrART000000Veld34	Voorraad freesbank
+		// vrART000000Veld35	Voorraad handvorm
+		// vrART000000Veld36	Voorraad inkoop-verkoop
+		// vrART000000Veld37	Voorraad logistiek
+		// vrART000000Veld38	Voorraad montage
+		// vrART000000Veld39	Voorraad pe
+		// vrART000000Veld40	Voorraad phytobac
+		// vrART000000Veld41	Voorraad putten	
+		// vrART000000Veld43	Voorraad debiteur
+		
 		//Get all voorraad artikelen from King
 		$sql="
 			SELECT 
@@ -94,21 +129,21 @@ class Voorraad_model extends CI_Model { // Voorraad Model class
 				vrr.VrijeVoorraad,
 				vrr.ArtInBestelling,
 				vrr.Gereserveerd,
-				vru.vrART000000Veld28 AS voorraad_sync,
-				vru.vrART000000Veld29 AS voorraad_tonen,
-				vru.vrART000000Veld32 AS voorraad_dvb,
-				vru.vrART000000Veld31 AS voorraad_draaibank,
-				vru.vrART000000Veld33 AS voorraad_extrusie,
-				vru.vrART000000Veld34 AS voorraad_freesbank,
-				vru.vrART000000Veld35 AS voorraad_handvorm,
-				vru.vrART000000Veld36 AS voorraad_inkoop_verkoop,
-				vru.vrART000000Veld37 AS voorraad_logistiek,
-				vru.vrART000000Veld38 AS voorraad_montage,
-				vru.vrART000000Veld39 AS voorraad_pe,
-				vru.vrART000000Veld40 AS voorraad_phytobac,
-				vru.vrART000000Veld41 AS voorraad_putten,
-				vru.vrART000000Veld32 AS voorraad_spuitgiet,
-				vru.vrART000000Veld43 AS voorraad_debiteur
+				vru." . $vrije_rubrieken['Voorraad sync'] . " AS voorraad_sync,
+				vru." . $vrije_rubrieken['Voorraad tonen'] . " AS voorraad_tonen,
+				vru." . $vrije_rubrieken['Voorraad dvb'] . " AS voorraad_dvb,
+				vru." . $vrije_rubrieken['Voorraad draaibank'] . " AS voorraad_draaibank,
+				vru." . $vrije_rubrieken['Voorraad extrusie'] . " AS voorraad_extrusie,
+				vru." . $vrije_rubrieken['Voorraad freesbank'] . " AS voorraad_freesbank,
+				vru." . $vrije_rubrieken['Voorraad handvorm'] . " AS voorraad_handvorm,
+				vru." . $vrije_rubrieken['Voorraad inkoop-verkoop'] . " AS voorraad_inkoop_verkoop,
+				vru." . $vrije_rubrieken['Voorraad logistiek'] . " AS voorraad_logistiek,
+				vru." . $vrije_rubrieken['Voorraad montage'] . " AS voorraad_montage,
+				vru." . $vrije_rubrieken['Voorraad pe'] . " AS voorraad_pe,
+				vru." . $vrije_rubrieken['Voorraad phytobac'] . " AS voorraad_phytobac,
+				vru." . $vrije_rubrieken['Voorraad putten'] . " AS voorraad_putten,
+				vru." . $vrije_rubrieken['Voorraad dvb'] . " AS voorraad_spuitgiet,
+				vru." . $vrije_rubrieken['Voorraad debiteur'] . " AS voorraad_debiteur
 			FROM 
 				kingsystem.vwKMBVoorraad vrr
 			LEFT JOIN
