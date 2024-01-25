@@ -14,7 +14,7 @@
 		parent::__construct();
 		$this->load->model('productie_model');
 		$this->load->model('settings_model');
-		$this->load->library('kingwebservices');
+		$this->load->library('KingWebservices');
 	}
 
 
