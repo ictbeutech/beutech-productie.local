@@ -155,7 +155,7 @@ class Orders_model extends CI_Model { // Orders Model class
 	
 	
 	function update_order_row($volgorde, $new_data_row_afdeling, $new_data_row_sub_afdeling, $new_data_row_lock_afdeling, $new_data_row_status, $new_data_row_debiteurnr, $new_data_row_klant, $new_data_row_ordernr, $new_data_row_artikelnr, 
-	$new_data_row_opbrgroep, $new_data_row_soort, $new_data_row_product, $new_data_row_aantal, $new_data_row_geproduceerd, $new_data_row_prio = null, $new_data_row_uren, $new_data_row_bon, $new_data_row_datum_klaar, $new_data_row_week_klaar, 
+	$new_data_row_opbrgroep, $new_data_row_soort, $new_data_row_product, $new_data_row_aantal, $new_data_row_geproduceerd, $new_data_row_prio, $new_data_row_uren, $new_data_row_bon, $new_data_row_datum_klaar, $new_data_row_week_klaar, 
 	$new_data_row_dag_klaar, $new_data_row_leverdatum, $new_data_row_week, $new_data_row_dag,
 	$new_data_row_toon, $new_data_row_administratie, $new_data_row_last_update_king, $new_data_row_id, $new_data_row_class){
 		
@@ -281,7 +281,7 @@ class Orders_model extends CI_Model { // Orders Model class
 	}
 	
 	
-	function getLock_status($order_id = FALSE, $orderregel_id = FALSE, $administratie){ // Get orderregel lock status
+	function getLock_status($order_id, $orderregel_id, $administratie){ // Get orderregel lock status
 		
 		$this->db->select('afdeling, sub_afdeling, lock_afdeling');
 		$this->db->where('id', $order_id);
@@ -367,7 +367,7 @@ class Orders_model extends CI_Model { // Orders Model class
 	}
 	
 	
-	function getRegelOpmerkingen($afdeling = FALSE, $datum_klaar){ // Fetch Sub afdelingen for afdeling
+	function getRegelOpmerkingen($afdeling, $datum_klaar){ // Fetch Sub afdelingen for afdeling
 		if (($afdeling !== FALSE) && (!empty($afdeling)) && ($datum_klaar !== FALSE) && (!empty($datum_klaar))){
 			
 			$db_datum_klaar = euro_to_system_date_time($datum_klaar);

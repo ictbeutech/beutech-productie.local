@@ -1178,6 +1178,7 @@ public function afdelingen_werklijst_putten ($week_nr) {
 			$new_data_row_product,
 			$new_data_row_aantal,
 			$new_data_row_geproduceerd,
+			null,
 			$new_data_row_uren,
 			$new_data_row_bon,
 			$new_data_row_datum_klaar,
