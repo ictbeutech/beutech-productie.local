@@ -1,10 +1,10 @@
 <?php
-	/* 
-	 * Plus Automatisering
-	 */
-	defined('BASEPATH') OR exit('No direct script access allowed');
-	
-	Class KingWebservices {
+/* 
+ * Plus Automatisering
+ */
+defined('BASEPATH') OR exit('No direct script access allowed');
+#[AllowDynamicProperties]
+Class KingWebservices {
 		
 		public $id;
 		public $webservicenaam;

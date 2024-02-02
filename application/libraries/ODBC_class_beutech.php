@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+#[AllowDynamicProperties]
 class ODBC_class_beutech {
 
    // ------- Constructor ------- //

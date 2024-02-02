@@ -1,10 +1,10 @@
 <?php
-	/* 
-	 * Plus Automatisering
-	 */
-	defined('BASEPATH') OR exit('No direct script access allowed');
-
-	Class Apicall {
+/* 
+ * Plus Automatisering
+ */
+defined('BASEPATH') OR exit('No direct script access allowed');
+#[AllowDynamicProperties]
+Class Apicall {
 		static $options;
 		static $request_url;
 		static $statuscode;
