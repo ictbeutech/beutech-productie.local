@@ -66,6 +66,13 @@ class CI_Router {
 	public $routes =	array();
 
 	/**
+	 * CI_URI class object
+	 *
+	 * @var	object
+	 */
+	public $uri;
+	
+	/**
 	 * Current class name
 	 *
 	 * @var	string
