@@ -2294,6 +2294,7 @@
 			}
 			
 			//Set subafdeling class without spaces for checkbox class
+			if( $sub_afdeling_filter === null ) { $sub_afdeling_filter = ''; }
 			$sub_afdeling_class = str_replace(' ', '', $sub_afdeling_filter);
 			
 			//Set status background color for rows
