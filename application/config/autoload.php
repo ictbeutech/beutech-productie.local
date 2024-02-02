@@ -91,7 +91,8 @@ $autoload['drivers'] = array();
 */
 $autoload['helper'] = array(
 	'date',
-	'url_helper'
+	'url_helper',
+	'custom_date_helper'
 );
 
 /*
