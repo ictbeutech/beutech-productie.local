@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -42,7 +43,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *
  * @category	Database
  * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/database/
+ * @link		https://codeigniter.com/userguide3/database/
  */
 class CI_DB_Cache {
 
@@ -108,7 +109,7 @@ class CI_DB_Cache {
 
 		if ( ! is_dir($path))
 		{
-			//log_message('debug', 'DB cache path error: '.$path);
+			log_message('debug', 'DB cache path error: '.$path);
 
 			// If the path is wrong we'll turn off caching
 			return $this->db->cache_off();
@@ -116,7 +117,7 @@ class CI_DB_Cache {
 
 		if ( ! is_really_writable($path))
 		{
-			//log_message('debug', 'DB cache dir not writable: '.$path);
+			log_message('debug', 'DB cache dir not writable: '.$path);
 
 			// If the path is not really writable we'll turn off caching
 			return $this->db->cache_off();

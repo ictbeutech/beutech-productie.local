@@ -17,5 +17,7 @@
 		<!-- END OF Footer -->
 		
 		<div id="loading"></div>
+		
+		<!-- CodeIgniter version <?php echo CI_VERSION; ?> -->
 	</body>
 </html>

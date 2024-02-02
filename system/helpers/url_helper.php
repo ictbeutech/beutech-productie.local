@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -44,7 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Helpers
  * @category	Helpers
  * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/helpers/url_helper.html
+ * @link		https://codeigniter.com/userguide3/helpers/url_helper.html
  */
 
 // ------------------------------------------------------------------------
@@ -567,46 +568,3 @@ if ( ! function_exists('redirect'))
 		exit;
 	}
 }
-
-/** PLUS AUTOMATISERING QUERY LOG FUNCTION**/
-
-/*
-function log_que($sql) {
-	
-	//Check for update geproduceerd
-	if(preg_match('/geproduceerd/',$sql)) {
-		$filepath_1 = APPPATH . 'logs/Query-geproduceerd-log-' . date('Y-m-d') . '.php';   
-		$handle_1 = fopen($filepath_1, "a+");
-	
-		fwrite($handle_1, $sql." \n Time: ".date("Y-m-d H:i:s")."\n\n");  
-	
-		fclose($handle_1); 
-	}
-	if(preg_match('/UPDATE /',$sql)) {
-		$filepath_2 = APPPATH . 'logs/Query-update-log-' . date('Y-m-d') . '.php';   
-		$handle_2 = fopen($filepath_2, "a+");
-	
-		fwrite($handle_2, $sql." \n Time: ".date("Y-m-d H:i:s")."\n\n");  
-	
-		fclose($handle_2); 
-	}
-	if(preg_match('/INSERT /',$sql)) {
-		$filepath_3 = APPPATH . 'logs/Query-insert-log-' . date('Y-m-d') . '.php';   
-		$handle_3 = fopen($filepath_3, "a+");
-	
-		fwrite($handle_3, $sql." \n Time: ".date("Y-m-d H:i:s")."\n\n");  
-	
-		fclose($handle_3); 
-	}
-	
-	if(preg_match('/REPLACE /',$sql)) {
-		$filepath_4 = APPPATH . 'logs/Query-replace-log-' . date('Y-m-d') . '.php';   
-		$handle_4 = fopen($filepath_4, "a+");
-	
-		fwrite($handle_4, $sql." \n Time: ".date("Y-m-d H:i:s")."\n\n");  
-	
-		fclose($handle_4); 
-	}
-      
-}
-*/

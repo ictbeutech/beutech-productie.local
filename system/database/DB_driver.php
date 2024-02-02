@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -48,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Drivers
  * @category	Database
  * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/database/
+ * @link		https://codeigniter.com/userguide3/database/
  */
 abstract class CI_DB_driver {
 
@@ -607,15 +608,6 @@ abstract class CI_DB_driver {
 	 */
 	public function query($sql, $binds = FALSE, $return_object = NULL)
 	{
-		/**
-			Plus Automatisering - DEBUG SQL LOG 
-			See system/helpers/url_helper.php for log function
-		**/
-		
-		//log_que($sql);
-		
-		/* END OF Plus Automatisering - DEBUG SQL LOG */
-		
 		if ($sql === '')
 		{
 			log_message('error', 'Invalid query: '.$sql);
@@ -878,7 +870,7 @@ abstract class CI_DB_driver {
 				$this->_trans_status = TRUE;
 			}
 
-			//log_message('debug', 'DB Transaction Failure');
+			log_message('debug', 'DB Transaction Failure');
 			return FALSE;
 		}
 
@@ -895,6 +887,18 @@ abstract class CI_DB_driver {
 	public function trans_status()
 	{
 		return $this->_trans_status;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Returns TRUE if a transaction is currently active
+	 *
+	 * @return	bool
+	 */
+	public function trans_active()
+	{
+		return (bool) $this->_trans_depth;
 	}
 
 	// --------------------------------------------------------------------
@@ -1573,6 +1577,7 @@ abstract class CI_DB_driver {
 				'\s+EXISTS\s*\(.*\)',        // EXISTS(sql)
 				'\s+NOT EXISTS\s*\(.*\)',    // NOT EXISTS(sql)
 				'\s+BETWEEN\s+',                 // BETWEEN value AND value
+				'\s+NOT BETWEEN\s+',             // NOT BETWEEN value AND value
 				'\s+IN\s*\(.*\)',            // IN(list)
 				'\s+NOT IN\s*\(.*\)',        // NOT IN (list)
 				'\s+LIKE\s+\S.*('.$_les.')?',    // LIKE 'expr'[ ESCAPE '%s']

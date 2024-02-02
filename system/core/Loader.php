@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -46,7 +47,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Libraries
  * @category	Loader
  * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/libraries/loader.html
+ * @link		https://codeigniter.com/userguide3/libraries/loader.html
  */
 class CI_Loader {
 
@@ -1056,7 +1057,7 @@ class CI_Loader {
 			$CI =& get_instance();
 			if (isset($CI->$property))
 			{
-				//log_message('debug', $class.' class already loaded. Second attempt ignored.');
+				log_message('debug', $class.' class already loaded. Second attempt ignored.');
 				return;
 			}
 
@@ -1132,7 +1133,7 @@ class CI_Loader {
 				return $this->_ci_init_library($library_name, $prefix, $params, $object_name);
 			}
 
-			//log_message('debug', $library_name.' class already loaded. Second attempt ignored.');
+			log_message('debug', $library_name.' class already loaded. Second attempt ignored.');
 			return;
 		}
 
@@ -1152,7 +1153,7 @@ class CI_Loader {
 					return $this->_ci_init_library($library_name, $prefix, $params, $object_name);
 				}
 
-				//log_message('debug', $path.' exists, but does not declare '.$prefix.$library_name);
+				log_message('debug', $path.' exists, but does not declare '.$prefix.$library_name);
 			}
 		}
 
@@ -1171,7 +1172,7 @@ class CI_Loader {
 					break;
 				}
 
-				//log_message('debug', $path.' exists, but does not declare '.$subclass);
+				log_message('debug', $path.' exists, but does not declare '.$subclass);
 			}
 		}
 
@@ -1269,7 +1270,7 @@ class CI_Loader {
 		{
 			if ($CI->$object_name instanceof $class_name)
 			{
-				//log_message('debug', $class_name." has already been instantiated as '".$object_name."'. Second attempt aborted.");
+				log_message('debug', $class_name." has already been instantiated as '".$object_name."'. Second attempt aborted.");
 				return;
 			}
 

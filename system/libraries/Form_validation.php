@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -44,7 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Libraries
  * @category	Validation
  * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/libraries/form_validation.html
+ * @link		https://codeigniter.com/userguide3/libraries/form_validation.html
  */
 class CI_Form_validation {
 
@@ -441,7 +442,7 @@ class CI_Form_validation {
 			// Were we able to set the rules correctly?
 			if (count($this->_field_data) === 0)
 			{
-				//log_message('debug', 'Unable to find validation rules');
+				log_message('debug', 'Unable to find validation rules');
 				return FALSE;
 			}
 		}
@@ -714,7 +715,7 @@ class CI_Form_validation {
 				{
 					if ( ! method_exists($this->CI, $rule))
 					{
-						//log_message('debug', 'Unable to find callback validation rule: '.$rule);
+						log_message('debug', 'Unable to find callback validation rule: '.$rule);
 						$result = FALSE;
 					}
 					else
@@ -766,7 +767,7 @@ class CI_Form_validation {
 				}
 				else
 				{
-					//log_message('debug', 'Unable to find validation rule: '.$rule);
+					log_message('debug', 'Unable to find validation rule: '.$rule);
 					$result = FALSE;
 				}
 			}
@@ -1056,7 +1057,7 @@ class CI_Form_validation {
 	{
 		return is_array($str)
 			? (empty($str) === FALSE)
-			: (trim($str) !== '');
+			: (trim((string) $str) !== '');
 	}
 
 	// --------------------------------------------------------------------
@@ -1206,6 +1207,13 @@ class CI_Form_validation {
 			}
 
 			$str = $matches[2];
+		}
+
+		// Apparently, FILTER_VALIDATE_URL doesn't reject digit-only names for some reason ...
+		// See https://github.com/bcit-ci/CodeIgniter/issues/5755
+		if (ctype_digit($str))
+		{
+			return FALSE;
 		}
 
 		// PHP 7 accepts IPv6 addresses within square brackets as hostnames,
