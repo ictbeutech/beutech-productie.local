@@ -130,8 +130,43 @@
 		$voorraadmutaties = $this->recepten_model->create_xml_voorraadmutatie();	
 		$count = 0;
 		
-		//Check if file 'voorraad_mutatie.xml' exists
 		$filename = "voorraad_correcties/voorraad_mutatie.xml";
+		
+					
+		//Check if file 'voorraad_mutatie.xml' exists
+		
+		$filename = EXTERNAL_WRITE_PATH . "/Voorraadcorrecties/voorraad_mutatie.xml";
+		echo $filename . "<br>";	
+		exit();
+		/*	
+		if (is_readable($filename)) {
+			echo "Kan het pad lezen";
+		}else{
+			echo "Kan het pad niet lezen";
+		}
+		exit();
+		*/
+		
+		// Check if the file exists
+		if (file_exists($filename)) {
+			// Attempt to load the XML file
+			$xml = simplexml_load_file($filename);
+
+			// Check if XML file is loaded successfully
+			if ($xml !== false) {
+				// XML file is loaded successfully, you can now work with $xml
+				// For example, you can access elements and attributes like $xml->elementName or $xml['attributeName']
+				// Process the XML data here
+			} else {
+				// Failed to load XML file
+				echo "Failed to load XML file.";
+			}
+		} else {
+			// File doesn't exist
+			echo "File does not exist.";
+		}
+		
+		exit();
 
 		if (file_exists($filename)) {
 			
@@ -229,17 +264,20 @@
 				";
 		
 				// Save XML for import King
-				$myFile = "voorraad_correcties/voorraad_mutatie.xml";
-				$fh = fopen($myFile, 'w');
+				$xml_save_file = EXTERNAL_WRITE_PATH . "/Voorraadcorrecties/voorraad_mutatie.xml";
+				
+				
+				$fh = fopen($xml_save_file, 'w');
 				fwrite($fh, $voorraad_mutatie_xml);
 				fclose($fh); 
 				
 				// Save XML for log
 				$date = new DateTime();
 				$date = $date->format('Ymd-His');
-				
-				$myFile_log = "voorraad_correcties/xml_logs/voorraad_mutatie" . $date .  ".xml";
-				$fl = fopen($myFile_log, 'w');
+								
+				$xml_save_file_log = EXTERNAL_WRITE_PATH . "/Voorraadcorrecties/XML-logs/voorraad_mutatie" . $date .  ".xml";
+			
+				$fl = fopen($xml_save_file_log, 'w');
 				fwrite($fl, $voorraad_mutatie_xml);
 				fclose($fl); 
 				//END OF - Create XML Voorraad mutatie		

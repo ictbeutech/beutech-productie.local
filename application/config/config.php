@@ -547,7 +547,8 @@ elseif( isset( $_SERVER['CI_ENVIRONMENT'] ) ) {
 if($app_environment == 'development') {
 	$config['base_url'] = 'http://beutech-productie.plusdev.nl';
 	$config['cookie_domain'] = 'beutech-productie.plusdev.nl';
-
+	define( "EXTERNAL_WRITE_PATH", "c:/test" );
+	
 	// King Webservices
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
 	define( 'WEBSERVICES_HOST',				'127.0.0.1' );
@@ -569,6 +570,7 @@ if($app_environment == 'development') {
 elseif($app_environment == 'staging') {
 	$config['base_url'] = 'http://staging.beutech-productie.local';
 	$config['cookie_domain'] = 'staging.beutech-productie.local';
+	define( "EXTERNAL_WRITE_PATH", FCPATH . "logs" );
 	
 	// King Webservices
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
@@ -591,6 +593,7 @@ elseif($app_environment == 'staging') {
 else {
 	$config['base_url'] = 'http://beutech-productie.local';
 	$config['cookie_domain'] = 'beutech-productie.local';
+	define( "EXTERNAL_WRITE_PATH", "/mnt/dc02/BeuteKB/Productie" );
 	
 	// King Webservices
 	define( 'WEBSERVICES_PROTOCOL',			'http' );
