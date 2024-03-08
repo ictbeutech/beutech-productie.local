@@ -42,8 +42,7 @@ class Autosync extends CI_Controller {
 		$count = 0;
 		
 		//Check if file 'voorraad_mutatie.xml' exists
-		$filename = "voorraad_correcties/voorraad_mutatie.xml";
-
+		$filename = EXTERNAL_WRITE_PATH . "/voorraad_correcties/voorraad_mutatie.xml";
 		if (file_exists($filename)) {
 			
 			//Send mail to verkoop with order details and aantal geproduceerd 
@@ -72,7 +71,8 @@ class Autosync extends CI_Controller {
 			//END OF - Send mail to verkoop with order details and aantal geproduceerd
 			
 		} else { //If file not exists -> Create XML
-		
+
+echo $filename . " bestaat niet\n";
 			if(isset($voorraadmutaties)&& !empty($voorraadmutaties)){ //If export voorraadmutaties results
 			
 				//Create XML Voorraad mutatie
@@ -144,22 +144,32 @@ class Autosync extends CI_Controller {
 				";
 			
 				// Save XML for import King
-				$myFile = "voorraad_correcties/voorraad_mutatie.xml";
-				$fh = fopen($myFile, 'w');
-				fwrite($fh, $voorraad_mutatie_xml);
-				fclose($fh); 
-				
-				// Save XML for log
-				$date = new DateTime();
-				$date = $date->format('Ymd-His');
-				
-				$myFile_log = "voorraad_correcties/xml_logs/voorraad_mutatie" . $date .  ".xml";
-				$fl = fopen($myFile_log, 'w');
-				fwrite($fl, $voorraad_mutatie_xml);
-				fclose($fl); 
+				// $myFile = "voorraad_correcties/voorraad_mutatie.xml";
+				$fh = fopen( $filename, 'w');
+				if( $fh !== false ) {
+					fwrite($fh, $voorraad_mutatie_xml);
+					fclose($fh); 
+
+echo "Write complete";
+					
+					// Save XML for log
+					$date = new DateTime();
+					$date = $date->format('Ymd-His');
+					
+					$myFile_log = EXTERNAL_WRITE_PATH . "/voorraad_correcties/xml_logs/voorraad_mutatie" . $date .  ".xml";
+					$fl = fopen($myFile_log, 'w');
+					fwrite($fl, $voorraad_mutatie_xml);
+					fclose($fl); 
+				}
+				else {
+					echo "Can't write file: " . $filename . "\n";
+				}
 				//END OF - Create XML Voorraad mutatie		
 				
 			} //END OF - If export voorraadmutaties results
+			else {
+				echo "Geen mutaties gevonden.\n";
+			}
 		
 		} //END OF - If file not exists -> Create XML
 		

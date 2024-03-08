@@ -17,5 +17,6 @@
 		<!-- END OF Footer -->
 		
 		<div id="loading"></div>
+		
 	</body>
 </html>
