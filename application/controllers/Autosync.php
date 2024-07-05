@@ -67,10 +67,8 @@ class Autosync extends CI_Controller {
 			$this->email->subject('Foutmelding genereren voorraadmutatie XML');
 			$this->email->message($message);
 			
+			// 16-05-2024 - HJ. Geen mail meer versturen voorraadmutaties worden niet meer gebruikt.
 			//
-			// 16-5-2024 - Voorraadmutaties worden niet meer gebruikt.
-			//
-			
 			// $this->email->send();
 			//END OF - Send mail to verkoop with order details and aantal geproduceerd
 			

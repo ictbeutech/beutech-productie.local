@@ -723,7 +723,7 @@ class Orders_model extends CI_Model { // Orders Model class
 					
 					//Convert timestamp
 					$lastupdate_regel_king = system_to_euro_date_time($lastupdate_regel_king);
-										
+
 				} //END OF - Get last_update_king from local database if orderregel exists 
 				
 				//Convert timestamp
