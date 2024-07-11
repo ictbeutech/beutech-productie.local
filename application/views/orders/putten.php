@@ -10,7 +10,7 @@
 <!-- Page heading row -->
 <div class="row d-flex justify-content-center border border-dark bg-dark py-1 mt-0 mb-2">
 	<div class="col my-2 text-center">
-		<a class="btn btn-secondary btn-sm" href="/orders" role="button"><i class="fas fa-arrow-left"></i>Terug</a>
+		<a class="btn btn-secondary btn-sm" href="/orders" role="button"><i class="fas fa-arrow-left"></i>Terugg</a>
 	</div>
 	<div class="col my-2 text-center">
 		<button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapse_week1 multiCollapse_week2 multiCollapse_week3 multiCollapse_week4">Verberg/Toon alle week overzichten</button>
