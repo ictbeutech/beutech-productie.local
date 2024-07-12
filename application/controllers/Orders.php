@@ -767,6 +767,9 @@
 		//Make sub afdeling list
 		$data['sub_afdeling_list_all'] = $this->orders_model->getSubAfdelingen($afdeling);
 		
+		//Get status Doorvoerbochten
+		$data['status_doorvoerbochten'] = $this->orders_model->getStatus_doorvoerbochten();
+		
 		//Put afdeling info in $data for view
 		$data['afdeling'] = $afdeling;
 		$data['title'] = '<i class="fas fa-filter"></i> ' . $afdeling;
