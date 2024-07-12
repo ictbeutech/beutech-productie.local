@@ -47,6 +47,10 @@ class Settings extends MY_Controller {
 		$afdelingen = array('Admin','Instellingen','Gebruikers','Recepten','Voorraad','Productie','Orderoverzicht','Doorvoerbochten','PE','Putten','Montage','Draaibank','Smans','Handvorm','Extrusie','Logistiek');
 		$data['afdelingen'] = $afdelingen;
 		
+		//List all afdelingen/pages
+		$afdelingen_planningsrechten = array('doorvoerbochten_planningsrechten','pe_planningsrechten','putten_planningsrechten','montage_planningsrechten');
+		$data['afdelingen_planningsrechten'] = $afdelingen_planningsrechten;
+		
 		//Create user -> If isset submit new user
 		if(isset($_POST["gebruiker_toevoegen"])){
 								
@@ -86,6 +90,15 @@ class Settings extends MY_Controller {
 				}
 			}
 			
+			//Gebruiker Afdelingen planningsrechten
+			$gebruiker_afdelingen_planningsrechten = "";
+			foreach($afdelingen as $afdeling){
+				if(isset($_POST["afdeling_".$afdeling."_planningsrechten"])){
+					$gebruiker_afdeling_planningsrechten = $_POST["afdeling_".$afdeling."_planningsrechten"];
+					$gebruiker_afdelingen_planningsrechten .= strtolower($gebruiker_afdeling_planningsrechten) . ";";
+				}
+			}
+			
 			//Gebruiker schrijfrechten
 			if(!empty($_POST['schrijfrechten'])){
 				$gebruiker_schrijfrechten = $_POST["schrijfrechten"];
@@ -118,7 +131,7 @@ class Settings extends MY_Controller {
 		
 		//Update user -> If isset submit user changes
 		if(isset($_POST["gebruiker_wijzigen"])){
-					
+								
 			//Gebruiker ID
 			if(!empty($_POST['gebruiker_id'])){
 				$gebruiker_id = $_POST["gebruiker_id"];
@@ -162,6 +175,15 @@ class Settings extends MY_Controller {
 				}
 			}
 			
+			//Gebruiker Afdelingen planningsrechten
+			$gebruiker_afdelingen_planningsrechten = "";
+			foreach($afdelingen as $afdeling){
+				if(isset($_POST["afdeling_".$afdeling."_planningsrechten"])){
+					$gebruiker_afdeling_planningsrechten = $_POST["afdeling_".$afdeling."_planningsrechten"];
+					$gebruiker_afdelingen_planningsrechten .= strtolower($gebruiker_afdeling_planningsrechten) . ";";
+				}
+			}
+			
 			//Gebruiker schrijfrechten
 			if(!empty($_POST['schrijfrechten'])){
 				$gebruiker_schrijfrechten = $_POST["schrijfrechten"];
@@ -169,7 +191,7 @@ class Settings extends MY_Controller {
 				$gebruiker_schrijfrechten = 0;
 			}
 						
-			if($this->settings_model->update_user($gebruiker_id, $gebruiker_naam, $gebruiker_level, $gebruiker_email, $gebruiker_password, $gebruiker_afdelingen, $gebruiker_schrijfrechten)){
+			if($this->settings_model->update_user($gebruiker_id, $gebruiker_naam, $gebruiker_level, $gebruiker_email, $gebruiker_password, $gebruiker_afdelingen, $gebruiker_afdelingen_planningsrechten, $gebruiker_schrijfrechten)){
 				
 				if($gebruiker_schrijfrechten == 1){
 					$schrijfrechten = "Ja";

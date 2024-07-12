@@ -711,6 +711,8 @@
 </div>
 <!-- END OF - Show Week 4 overzicht -->
 
+<!-- Check user rights for planningsrechten -->
+<?php if (in_array($afdeling_name_planningsrechten, $this->session->userdata['afdelingen_planningsrechten'])) { ?>
 <script>
 		$(document).ready(function(){
 			$('.rij').on('click',function(event){
@@ -736,7 +738,16 @@
 			});
 		});
 	</script>
-
+<?php }else{ ?>
+	<script>
+		$(document).ready(function(){
+			$('.rij').on('click',function(event){
+				alert("Je hebt geen rechten om deze regel vast te zetten.");				
+			});
+		});
+	</script>
+<?php } ?>
+<!-- END OF - Check user rights for planningsrechten -->
 
 <!-- Order table row-->
 <table id="order_table" class="table table-bordered table-hover" width="100%">

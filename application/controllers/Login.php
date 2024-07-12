@@ -30,21 +30,27 @@ class Login extends CI_Controller{
 		$password = md5($this->input->post('password',TRUE));
 		$validate = $this->login_model->validate($email,$password);
 		if($validate->num_rows() > 0){
+			
 			$data  = $validate->row_array();
 			$name  = $data['gebruiker_naam'];
 			$email = $data['gebruiker_email'];
 			$level = $data['gebruiker_level'];
 			$afdelingen = explode(";", $data['gebruiker_afdelingen']);
+			$afdelingen_planningsrechten = explode(";", $data['gebruiker_afdelingen_planningsrechten']);
 			$schrijven = $data['gebruiker_schrijfrechten'];
+			
 			$sesdata = array(
-				'gebuikersnaam' => $name,
-				'email'     	=> $email,
-				'level'     	=> $level,
-				'afdelingen'   	=> $afdelingen,
-				'schrijven'		=> $schrijven,
-				'logged_in' 	=> TRUE
+				'gebuikersnaam' 				=> $name,
+				'email'     					=> $email,
+				'level'     					=> $level,
+				'afdelingen'   					=> $afdelingen,
+				'afdelingen_planningsrechten' 	=> $afdelingen_planningsrechten,
+				'schrijven'						=> $schrijven,
+				'logged_in' 					=> TRUE
 			);
+			
 			$this->session->set_userdata($sesdata);
+					
 			// access login for admin
 			if($level === 'Admin'){
 				$this->session->set_flashdata('msg_success', "U bent succesvol ingelogd als <strong>{$name} - {$level}</strong>");
@@ -55,6 +61,7 @@ class Login extends CI_Controller{
 				$this->session->set_flashdata('msg_success', "U bent succesvol ingelogd als <strong>{$name} - {$level}</strong>");
 				redirect('dashboard');
 			}
+			
 		}
 		else{
 

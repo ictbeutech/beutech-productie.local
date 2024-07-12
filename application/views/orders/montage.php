@@ -75,9 +75,19 @@
 						foreach($day['sub_afdelingen_list'] as $sub_afdelingen){ 
 							$aantal = $aantal + $sub_afdelingen['te_produceren'];
 							$subafdelingen = array_column($day['opmerkingen'], 'sub_afdeling');
+							
+							$unique_string = $day['datum_klaar'] . $sub_afdelingen['sub_afdeling'];
+							$row_alert = "";
+							
+							if(array_search($unique_string, array_column($status_doorvoerbochten, 'unique_string')) !== false) {
+								$row_alert = "row_alert";
+							}
+							else {
+								$row_alert = "";
+							}
 					?>	
 						
-						<tr>
+						<tr class="<?php echo $row_alert; ?>">
 							<td>
 								<!-- Modal opmerkingen -->
 								<?php 
@@ -133,7 +143,7 @@
 								<!-- END OF - Modal opmerkingen -->
 								
 							</td>
-							<td>							
+							<td class="rij" data-unique-string="<?php echo $day['datum_klaar'] . $sub_afdelingen['sub_afdeling']; ?>" >								
 								<?php echo $sub_afdelingen['sub_afdeling']; ?> 			
 							</td>
 							<td class="text-right border-right"><?php echo $sub_afdelingen['te_produceren']; ?></td>
@@ -235,8 +245,18 @@
 						foreach($day['sub_afdelingen_list'] as $sub_afdelingen){ 
 							$aantal = $aantal + $sub_afdelingen['te_produceren'];
 							$subafdelingen = array_column($day['opmerkingen'], 'sub_afdeling');
+							
+							$unique_string = $day['datum_klaar'] . $sub_afdelingen['sub_afdeling'];
+							$row_alert = "";
+							
+							if(array_search($unique_string, array_column($status_doorvoerbochten, 'unique_string')) !== false) {
+								$row_alert = "row_alert";
+							}
+							else {
+								$row_alert = "";
+							}
 					?>	
-						<tr>
+						<tr class="<?php echo $row_alert; ?>">
 							<td>
 							
 								<!-- Modal opmerkingen -->
@@ -291,7 +311,7 @@
 								<?php } ?> <!-- END OF - Modal opmerkingen -->
 								
 							</td>
-							<td>							
+							<td class="rij" data-unique-string="<?php echo $day['datum_klaar'] . $sub_afdelingen['sub_afdeling']; ?>" >									
 								<?php echo $sub_afdelingen['sub_afdeling']; ?> 			
 							</td>
 							<td class="text-right border-right"><?php echo $sub_afdelingen['te_produceren']; ?></td>
@@ -395,8 +415,18 @@
 						foreach($day['sub_afdelingen_list'] as $sub_afdelingen){ 
 							$aantal = $aantal + $sub_afdelingen['te_produceren'];
 							$subafdelingen = array_column($day['opmerkingen'], 'sub_afdeling');
+							
+							$unique_string = $day['datum_klaar'] . $sub_afdelingen['sub_afdeling'];
+							$row_alert = "";
+							
+							if(array_search($unique_string, array_column($status_doorvoerbochten, 'unique_string')) !== false) {
+								$row_alert = "row_alert";
+							}
+							else {
+								$row_alert = "";
+							}
 					?>	
-						<tr>
+						<tr class="<?php echo $row_alert; ?>">
 							<td>
 							
 								<!-- Modal opmerkingen -->
@@ -451,7 +481,7 @@
 								<?php }?><!-- END OF - Modal opmerkingen -->
 								
 							</td>
-							<td>							
+							<td class="rij" data-unique-string="<?php echo $day['datum_klaar'] . $sub_afdelingen['sub_afdeling']; ?>" >									
 								<?php echo $sub_afdelingen['sub_afdeling']; ?> 			
 							</td>
 							<td class="text-right border-right"><?php echo $sub_afdelingen['te_produceren']; ?></td>
@@ -553,8 +583,18 @@
 						foreach($day['sub_afdelingen_list'] as $sub_afdelingen){ 
 							$aantal = $aantal + $sub_afdelingen['te_produceren'];
 							$subafdelingen = array_column($day['opmerkingen'], 'sub_afdeling');
+							
+							$unique_string = $day['datum_klaar'] . $sub_afdelingen['sub_afdeling'];
+							$row_alert = "";
+							
+							if(array_search($unique_string, array_column($status_doorvoerbochten, 'unique_string')) !== false) {
+								$row_alert = "row_alert";
+							}
+							else {
+								$row_alert = "";
+							}
 					?>	
-						<tr><!-- TR Subafdeling info -->	
+						<tr class="<?php echo $row_alert; ?>">	
 							<td><!-- TD - Opmerkingen -->
 							
 								<!-- Modal opmerkingen -->
@@ -610,7 +650,7 @@
 								<!-- END OF - Modal opmerkingen -->
 								
 							</td>
-							<td><!-- TD - Subafdeling -->							
+							<td class="rij" data-unique-string="<?php echo $day['datum_klaar'] . $sub_afdelingen['sub_afdeling']; ?>" >								
 								<?php echo $sub_afdelingen['sub_afdeling']; ?> 			
 							</td>
 							<td class="text-right border-right"><!-- TD - Aantalen -->
@@ -668,6 +708,44 @@
 	
 </div>
 <!-- END OF - Show Week 4 overzicht -->
+
+<!-- Check user rights for planningsrechten -->
+<?php if (in_array($afdeling_name_planningsrechten, $this->session->userdata['afdelingen_planningsrechten'])) { ?>
+<script>
+		$(document).ready(function(){
+			$('.rij').on('click',function(event){
+				
+				var unique_string = $(this).data('unique-string');
+				
+				$(event.target).closest('tr').toggleClass('row_alert')
+						
+				$.ajax({
+					url : "<?php echo site_url('Orders/update_status_doorvoerbochten') ?>",
+					type : 'POST',
+					data: {
+						"unique_string": unique_string					
+					},
+					success: function(){						
+						//alert('Succes: Het wijzigen van de status is gelukt');
+					},
+					error: function(){
+						//alert('Fout: Het wijzigen van de status is niet gelukt');
+					}
+				});
+				
+			});
+		});
+	</script>
+<?php }else{ ?>
+	<script>
+		$(document).ready(function(){
+			$('.rij').on('click',function(event){
+				alert("Je hebt geen rechten om deze regel vast te zetten.");				
+			});
+		});
+	</script>
+<?php } ?>
+<!-- END OF - Check user rights for planningsrechten -->
 
 <!-- Order table row-->
 <table id="order_table" class="table table-bordered table-hover" width="100%">

@@ -34,7 +34,7 @@ class Settings_model extends CI_Model { // Orders Model class
 	} // END OF - Get all users
 	
 	
-	function create_user($gebruiker_naam, $gebruiker_level, $gebruiker_email, $gebruiker_password, $gebruiker_afdelingen, $gebruiker_schrijfrechten){ // Create user
+	function create_user($gebruiker_naam, $gebruiker_level, $gebruiker_email, $gebruiker_password, $gebruiker_afdelingen, $gebruiker_afdelingen_planningsrechten, $gebruiker_schrijfrechten){ // Create user
 		
 		$data = array(
 			'gebruiker_naam'  => $gebruiker_naam,
@@ -42,6 +42,7 @@ class Settings_model extends CI_Model { // Orders Model class
 			'gebruiker_email'  => $gebruiker_email,
 			'gebruiker_password'  => md5($gebruiker_password),
 			'gebruiker_afdelingen'  => $gebruiker_afdelingen,
+			'gebruiker_afdelingen_planningsrechten'  => $gebruiker_afdelingen_planningsrechten,
 			'gebruiker_schrijfrechten'  => $gebruiker_schrijfrechten
 		);
 		
@@ -52,7 +53,7 @@ class Settings_model extends CI_Model { // Orders Model class
 	} // END OF - Create user
 	
 	
-	function update_user($gebruiker_id, $gebruiker_naam, $gebruiker_level, $gebruiker_email, $gebruiker_password, $gebruiker_afdelingen, $gebruiker_schrijfrechten){ // Update user
+	function update_user($gebruiker_id, $gebruiker_naam, $gebruiker_level, $gebruiker_email, $gebruiker_password, $gebruiker_afdelingen, $gebruiker_afdelingen_planningsrechten, $gebruiker_schrijfrechten){ // Update user
 		
 		if(!empty($gebruiker_password)){
 			$data = array(
@@ -61,6 +62,7 @@ class Settings_model extends CI_Model { // Orders Model class
 				'gebruiker_email'  => $gebruiker_email,
 				'gebruiker_password'  => md5($gebruiker_password),
 				'gebruiker_afdelingen'  => $gebruiker_afdelingen,
+				'gebruiker_afdelingen_planningsrechten'  => $gebruiker_afdelingen_planningsrechten,
 				'gebruiker_schrijfrechten'  => $gebruiker_schrijfrechten
 			);
 		}else{
@@ -69,6 +71,7 @@ class Settings_model extends CI_Model { // Orders Model class
 				'gebruiker_level'  => $gebruiker_level,
 				'gebruiker_email'  => $gebruiker_email,
 				'gebruiker_afdelingen'  => $gebruiker_afdelingen,
+				'gebruiker_afdelingen_planningsrechten'  => $gebruiker_afdelingen_planningsrechten,
 				'gebruiker_schrijfrechten'  => $gebruiker_schrijfrechten
 			);
 		}

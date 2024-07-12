@@ -284,6 +284,7 @@
 		$afdeling_code = "Dvb";
 		$data['title'] = '<i class="fas fa-wave-sine"></i> ' . $afdeling;
 		$data['afdeling_name'] = $afdeling_code;
+		$data['afdeling_name_planningsrechten'] = strtolower($afdeling) . "_planningsrechten";
 		
 		//Make afdeling list
 		$data['afdeling_list_all'] = $this->orders_model->getAfdelingen();
@@ -520,12 +521,16 @@
 		$data['user_access'] = $this->check_user_rights($afdeling, $user_level, $user_email);
 		
 		$data['afdeling_name'] = $afdeling;
+		$data['afdeling_name_planningsrechten'] = strtolower($afdeling) . "_planningsrechten";
 		
 		//Make afdeling list
 		$data['afdeling_list_all'] = $this->orders_model->getAfdelingen();
 		
 		//Make sub afdeling list
 		$data['sub_afdeling_list_all'] = $this->orders_model->getSubAfdelingen($afdeling);
+		
+		//Get status Doorvoerbochten
+		$data['status_doorvoerbochten'] = $this->orders_model->getStatus_doorvoerbochten();
 		
 		//Put afdeling info in $data for view
 		$data['afdeling'] = $afdeling;
@@ -760,6 +765,7 @@
 		
 
 		$data['afdeling_name'] = $afdeling;
+		$data['afdeling_name_planningsrechten'] = strtolower($afdeling) . "_planningsrechten";
 		
 		//Make afdeling list
 		$data['afdeling_list_all'] = $this->orders_model->getAfdelingen();
@@ -1000,12 +1006,16 @@
 		$data['user_access'] = $this->check_user_rights($afdeling, $user_level, $user_email);
 		
 		$data['afdeling_name'] = $afdeling;
+		$data['afdeling_name_planningsrechten'] = strtolower($afdeling) . "_planningsrechten";
 		
 		//Make afdeling list
 		$data['afdeling_list_all'] = $this->orders_model->getAfdelingen();
 		
 		//Make sub afdeling list
 		$data['sub_afdeling_list_all'] = $this->orders_model->getSubAfdelingen($afdeling);
+		
+		//Get status Doorvoerbochten
+		$data['status_doorvoerbochten'] = $this->orders_model->getStatus_doorvoerbochten();
 		
 		//Put afdeling info in $data for view
 		$data['afdeling'] = $afdeling;

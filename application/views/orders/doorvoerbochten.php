@@ -96,36 +96,7 @@
 		</div>
 	<?php } ?>
 	<!-- END OF - Show dag overzicht deze week -->
-	
-		<script>
-			$(document).ready(function(){
-				$('.rij').on('click',function(event){
-					var datum_klaar = event.target.id;
-					var sub_afdeling = $(this).html();
-					
-					var unique_string = datum_klaar + sub_afdeling;
-					$(event.target).closest('tr').toggleClass('row_alert')
-										
-					$.ajax({
-						url : "<?php echo site_url('Orders/update_status_doorvoerbochten') ?>",
-						type : 'POST',
-						data: {
-							"unique_string": unique_string,
-							"datum_klaar": datum_klaar,
-							"sub_afdeling":	sub_afdeling					
-						},
-						success: function(){						
-							//alert('Succes: Het wijzigen van de status is gelukt');
-						},
-						error: function(){
-							//alert('Fout: Het wijzigen van de status is niet gelukt');
-						}
-					});
-					
-				});
-			});
-		</script>
-	
+			
 </div>
 
 <div class="row mb-0">
@@ -189,6 +160,47 @@
 	<!-- END OF - Show dag overzicht volgende week -->
 </div>
 <!-- END OF - Show Week overzicht-->
+
+<!-- // Check user rights for planningsrechten -->
+<?php if (in_array($afdeling_name_planningsrechten, $this->session->userdata['afdelingen_planningsrechten'])) { ?>
+	<script>
+		$(document).ready(function(){
+			$('.rij').on('click',function(event){
+				var datum_klaar = event.target.id;
+				var sub_afdeling = $(this).html();
+				
+				var unique_string = datum_klaar + sub_afdeling;
+				$(event.target).closest('tr').toggleClass('row_alert')
+									
+				$.ajax({
+					url : "<?php echo site_url('Orders/update_status_doorvoerbochten') ?>",
+					type : 'POST',
+					data: {
+						"unique_string": unique_string,
+						"datum_klaar": datum_klaar,
+						"sub_afdeling":	sub_afdeling					
+					},
+					success: function(){						
+						//alert('Succes: Het wijzigen van de status is gelukt');
+					},
+					error: function(){
+						//alert('Fout: Het wijzigen van de status is niet gelukt');
+					}
+				});
+				
+			});
+		});
+	</script>
+<?php }else{ ?>
+	<script>
+		$(document).ready(function(){
+			$('.rij').on('click',function(event){
+				alert("Je hebt geen rechten om deze regel vast te zetten.");				
+			});
+		});
+	</script>
+<?php } ?>
+
 
 <!-- Order table row-->
 <table id="order_table" class="table table-bordered table-hover" width="100%">

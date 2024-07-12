@@ -68,19 +68,48 @@
 							<td><input name="gebruiker_naam" class="form-control" type="text" value="<?php echo $gebruiker->gebruiker_naam; ?>" required></td>
 							<td><input name="gebruiker_level" class="form-control" type="text" value="<?php echo $gebruiker->gebruiker_level; ?>" required></td>
 							<td>
-								<?php $afdelingen_gebruiker = explode(";", $gebruiker->gebruiker_afdelingen); 
+								<?php 
+									$afdelingen_gebruiker = explode(";", $gebruiker->gebruiker_afdelingen); 
+									$afdelingen_gebruiker_planningsrechten = array();
+									if(isset($gebruiker->gebruiker_afdelingen_planningsrechten) && !empty($gebruiker->gebruiker_afdelingen_planningsrechten) ){
+										$afdelingen_gebruiker_planningsrechten = explode(";", $gebruiker->gebruiker_afdelingen_planningsrechten);
+									}
+																	
 									foreach ($afdelingen as $afdeling){
 										if (in_array($afdeling, $afdelingen_gebruiker)) {
 											$checked_afdelingen = "checked";
 										}else{
 											$checked_afdelingen = "";
-										}?>
+										}
+										$check_planningsrechten = strtolower($afdeling) . "_planningsrechten";
+										if (in_array($check_planningsrechten, $afdelingen_gebruiker_planningsrechten)) {
+											$checked_afdelingen_planningsrechten = "checked";											
+										}else{
+											$checked_afdelingen_planningsrechten = "";											
+										}																										
+										?>
+
+										<?php
+											$check_lock_rights = "";
+											if($afdeling == "Doorvoerbochten" || $afdeling == "PE" || $afdeling == "Putten" || $afdeling == "Montage"){
+												$check_lock_rights = '
+													<br>
+													<input style="margin-left: 1px;" name="afdeling_' .$afdeling. '_planningsrechten" class="form-check-input" type="checkbox" id="inlineCheckbox" value="' .strtolower($afdeling). '_planningsrechten" '.$checked_afdelingen_planningsrechten.' >
+													<label style="margin-left: 20px;" class="form-check-label" for="inlineCheckbox">
+														Planningsrechten
+													</label>
+												';
+											}
+										?>
+										
 										<div class="form-check">
+											
 											<input name="afdeling_<?php echo $afdeling; ?>" class="form-check-input" type="checkbox" id="inlineCheckbox" value="<?php echo $afdeling; ?>" <?php echo $checked_afdelingen; ?> >
 											<label class="form-check-label" for="inlineCheckbox">
 												<?php echo $afdeling; ?>
 												<?php if($afdeling == "Admin"){ echo "(alle rechten)"; } ?>
-											</label>
+											</label>										
+											<?php echo $check_lock_rights; ?>
 										</div>
 								<?php } ?>
 								
