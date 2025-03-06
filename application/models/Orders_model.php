@@ -1,10 +1,11 @@
 <?php
+error_reporting(0);
+
 class Orders_model extends CI_Model { // Orders Model class
 
 	public function __construct(){
 		$this->load->database();
 	}		
-	
 	
 	function getOrder($ordernr = FALSE){ // Fetch ordersdetails
 	
@@ -17,7 +18,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	} // END OF - Fetch orders
 	
-	
 	function getOrderRows($ordernr = FALSE){ // Fetch ordersrows 
 	
 		if (($ordernr !== FALSE) && (!empty($ordernr))){ // Fetch singel order
@@ -28,7 +28,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		} // END OF - Fetch singel order
 		
 	} // END OF - Fetch orders
-
 
 	function getNewOrders($afdeling = FALSE, $current_date = FALSE, $sub_afdeling = FALSE){ // Fetch new orders
 				
@@ -44,12 +43,9 @@ class Orders_model extends CI_Model { // Orders Model class
 				return $query->result();
 			}
 			
-			
-			
 		} // END OF - Fetch new orders for afdeling
 		
 	} // END OF - Fetch new orders
-
 
 	function getDebiteurenAfdeling($afdeling = FALSE){ // Get all debiteuren with orders for afdeling
 	
@@ -65,7 +61,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	} // END OF - Get all debiteuren with orders for afdeling
 	
-	
 	function get_orderregelsDebiteur($debiteurnr = FALSE, $afdeling = FALSE){ // Get all debiteuren with orders for afdeling
 	
 		if (($debiteurnr !== FALSE) && ($afdeling !== FALSE)){ 
@@ -79,7 +74,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	} // END OF - Get all debiteuren with orders for afdeling
 	
-	
 	function get_contactpersonenDebiteur($debiteurnr = FALSE){ // Get all debiteuren with orders for afdeling
 	
 		if ($debiteurnr !== FALSE){ 
@@ -91,7 +85,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	} // END OF - Get all debiteuren with orders for afdeling
 	
-	
 	function getOrderLogs($ordernr = FALSE){ // Fetch orderrow logs 
 			
 		if (($ordernr !== FALSE) && (!empty($ordernr))){ // Fetch singel order log
@@ -101,7 +94,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		} // END OF - Fetch singel order log
 		
 	} // END OF - Fetch orderrow logs 
-	
 	
 	function getOrders_for_week($week_nr = FALSE){ // Fetch orders for a week
 		
@@ -114,7 +106,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	} // END OF - Fetch orders
 	
-	
 	function getStatus_doorvoerbochten(){
 
 		$this->db->select('unique_string');
@@ -122,7 +113,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		return $query->result_array();
 	
 	}
-	
 	
 	function update_status_doorvoerbochten($unique_string){
 		
@@ -152,7 +142,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		}		
 		
 	}
-	
 	
 	function update_order_row($volgorde, $new_data_row_afdeling, $new_data_row_sub_afdeling, $new_data_row_lock_afdeling, $new_data_row_status, $new_data_row_debiteurnr, $new_data_row_klant, $new_data_row_ordernr, $new_data_row_artikelnr, 
 	$new_data_row_opbrgroep, $new_data_row_soort, $new_data_row_product, $new_data_row_aantal, $new_data_row_geproduceerd, $new_data_row_prio, $new_data_row_uren, $new_data_row_bon, $new_data_row_datum_klaar, $new_data_row_week_klaar, 
@@ -195,8 +184,7 @@ class Orders_model extends CI_Model { // Orders Model class
 		$this->db->where('administratie', $new_data_row_administratie);
 		$this->db->update('orders', $data);
 	}
-	
-	
+		
 	function getOrderVolgorde($afdeling, $sub_afdeling){
 				
 		$this->db->select_max('volgorde');
@@ -211,7 +199,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		return $query->row();
 	}
 	
-	
 	function update_order_volgorde($id, $volgorde){
 				
 		$data = array(
@@ -222,7 +209,6 @@ class Orders_model extends CI_Model { // Orders Model class
 	
 	}
 
-
 	function update_order_rows($row_id){ //Update order rows 
 		
 		$data = array(
@@ -231,7 +217,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		$this->db->where('id', $row_id);
 		$this->db->update('orders', $data);
 	}
-
 
 	function new_voorraad_mutatie($recept, $geproduceerd, $new_data_row_afdeling, $new_data_row_sub_afdeling){ //Insert new voorraad mutatie in database
 		
@@ -257,7 +242,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	}
 	
-	
 	function new_productie_mutatie($orderregel_id, $order_nr, $afdeling, $sub_afdeling, $aantal_geproduceerd, $administratie, $user){ //Insert new productie mutatie in database
 		
 		//Default values
@@ -280,7 +264,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	}
 	
-	
 	function getLock_status($order_id, $orderregel_id, $administratie){ // Get orderregel lock status
 		
 		$this->db->select('afdeling, sub_afdeling, lock_afdeling');
@@ -293,7 +276,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	}
 	
-	
 	function getAfdelingen(){ // Fetch all afdelingen
 
 			$this->db->distinct();
@@ -303,7 +285,6 @@ class Orders_model extends CI_Model { // Orders Model class
 			return $query->result_array();
 		
 	}
-	
 	
 	function getSubAfdelingen($afdeling = FALSE, $week_nr = FALSE, $dag_klaar = FALSE){ // Fetch Sub afdelingen for afdeling
 		
@@ -366,7 +347,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	}
 	
-	
 	function getRegelOpmerkingen($afdeling, $datum_klaar){ // Fetch Sub afdelingen for afdeling
 		if (($afdeling !== FALSE) && (!empty($afdeling)) && ($datum_klaar !== FALSE) && (!empty($datum_klaar))){
 			
@@ -387,7 +367,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		}
 	}
 	
-	
 	public function get_uren($year, $week_nr, $afdeling){ // Get user input productie uren per week
 		$query = $this->db->get_where('uren_overzicht', array(
 			'jaar' => $year,
@@ -396,7 +375,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		));
 		return $query->row_array();
 	}
-	
 	
 	public function update_uren($id, $year, $week, $afdeling, $uren_maandag, $uren_dinsdag, $uren_woensdag, $uren_donderdag, $uren_vrijdag){ // Update user input productie uren per week
 		$data = array(
@@ -412,7 +390,6 @@ class Orders_model extends CI_Model { // Orders Model class
 		);
 		$this->db->replace('uren_overzicht', $data);
 	}
-	
 	
 	public function get_orders($afdeling_filter, $week_klaar, $sub_afdeling_filter, $exclude_sub_afdeling_filter){ //Get all orders for datatables
 		
@@ -438,7 +415,7 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 		if( ($afdeling_filter != "Draaibank") && ($afdeling_filter != "Handvorm") && ($afdeling_filter != "Putten") ){
 			//Only get orderregels from (x) weeks in the past. 
-			$this->db->where("leverdatum >= DATE_SUB(NOW(),INTERVAL 1 WEEK)", NULL, FALSE);
+			$this->db->where("(productie_order = 1 OR leverdatum >= DATE_SUB(NOW(), INTERVAL 1 WEEK))", NULL, FALSE);
 		}
 		
 		if( ($afdeling_filter != "Handvorm") && ($afdeling_filter != "Putten") && ($afdeling_filter != "Draaibank") && ($afdeling_filter != "Logistiek") ){
@@ -464,7 +441,6 @@ class Orders_model extends CI_Model { // Orders Model class
 			   
     } //END OF - Get all orders for datatables
 	
-	
 	public function get_total_orders(){ //Get total orders for pagination
 	
 		$query = $this->db->select("COUNT(*) as num")->get("orders");
@@ -482,13 +458,11 @@ class Orders_model extends CI_Model { // Orders Model class
 		
 	} //END OF - Get total orders for pagination
 	
-	
 	function in_array_r($orderregel_id , $local_orderregel_ids){ //Check if King orderregel already exists in local db
 	
 		return preg_match('/"'.preg_quote($orderregel_id, '/').'"/i' , json_encode($local_orderregel_ids));
 		
 	} //END OF - Check if orderregel already exists in local db
-	
 	
 	function syncOrders_tibuplast(){ //Sync orders Tibuplast
 		
@@ -746,10 +720,18 @@ class Orders_model extends CI_Model { // Orders Model class
 					$order_last_modified_king = $order->OrkLastModified;
 					$orderregel_last_modified_king = $order->OrrLastModified;
 					$debiteurnr = $order->NawFilNummer;
-					$klant = utf8_encode($order->VAdrNaam1);
+					if (!mb_check_encoding($order->VAdrNaam1, 'UTF-8')) {
+						$klant = mb_convert_encoding($order->VAdrNaam1, 'UTF-8', 'ISO-8859-1');
+					} else {
+						$klant = $order->VAdrNaam1;
+					}
 					$artikelnr = $order->ArtCode;
 					$opbrgroep = $order->OpbrGrpNummer;
-					$product = utf8_encode($order->OrrTekstOpFactuur);
+					if (!mb_check_encoding($order->OrrTekstOpFactuur, 'UTF-8')) {
+						$product = mb_convert_encoding($order->OrrTekstOpFactuur, 'UTF-8', 'ISO-8859-1');
+					} else {
+						$product = $order->OrrTekstOpFactuur;
+					}
 					$aantal = str_replace(".000", "" ,$order->OrrAantalLeveringVrrdEenh);
 					$aantal_besteld = str_replace(".000", "" ,$order->OrrAantalBesteldVrrdEenh);
 					$aantal_backorder = str_replace(".000", "" ,$order->OrrAantalBackorderVrrdEenh);
@@ -981,10 +963,18 @@ class Orders_model extends CI_Model { // Orders Model class
 					$order_last_modified_king = $order->OrkLastModified;
 					$orderregel_last_modified_king = $order->OrrLastModified;
 					$debiteurnr = $order->NawFilNummer;
-					$klant = utf8_encode($order->VAdrNaam1);
+					if (!mb_check_encoding($order->VAdrNaam1, 'UTF-8')) {
+						$klant = mb_convert_encoding($order->VAdrNaam1, 'UTF-8', 'ISO-8859-1');
+					} else {
+						$klant = $order->VAdrNaam1;
+					}
 					$artikelnr = $order->ArtCode;
 					$opbrgroep = $order->OpbrGrpNummer;
-					$product = utf8_encode($order->OrrTekstOpFactuur);
+					if (!mb_check_encoding($order->OrrTekstOpFactuur, 'UTF-8')) {
+						$product = mb_convert_encoding($order->OrrTekstOpFactuur, 'UTF-8', 'ISO-8859-1');
+					} else {
+						$product = $order->OrrTekstOpFactuur;
+					}					
 					$aantal = str_replace(".000", "" ,$order->OrrAantalLeveringVrrdEenh);
 					$aantal_backorder = str_replace(".000", "" ,$order->OrrAantalBackorderVrrdEenh);
 					$aantal_besteld = str_replace(".000", "" ,$order->OrrAantalBesteldVrrdEenh);
@@ -1345,6 +1335,124 @@ class Orders_model extends CI_Model { // Orders Model class
 		// 	avr.vrART000000Veld19		Vrije rubriek 'Afdeling'
 		// 	avr.vrART000000Veld20		Vrije rubriek 'Subafdeling'
 		// 	avr.vrART000000Veld21		Vrije rubriek 'Productietijd'
+		
+		//Check productieorders
+		$bestandOms = 'PRD';
+		$vrije_rubrieken_productie = $this->get_vrije_rubriek_naam_en_labels( $odbc, $bestandOms );
+		
+		$sql_3_beutech="
+			SELECT
+				CASE
+					WHEN deb.NawGidje IS NULL OR deb.NawGidje = '' THEN 0
+					ELSE deb.NawGidje
+				END AS OrkNawGid,
+				pork.PrdOkGid AS OrkGid,				
+				pork.PrdOkNummer AS OrkNummer, 	 		
+				pork.PrdOkTeProducerenVoor AS Orkleverdatum,
+				porkhist.tabProductieOrderKop_HIST_date AS OrkLastModified,
+				ork.OrkReferentie AS OrkReferentie,
+				deb.NawFilNummer AS NawFilNummer,
+				deb.VAdrNaam1 AS VAdrNaam1,
+				art.ArtCode AS ArtCode,
+				opb.OpbrGrpGid AS OpbrGrpGid,
+				prvr." . $vrije_rubrieken_productie['Afdeling'] . " AS vrART000000Veld1,
+				prvr." . $vrije_rubrieken_productie['Subafdeling'] . " AS vrART000000Veld2,
+				vrART000000Veld3 = '',
+				opb.OpbrGrpNummer AS OpbrGrpNummer,				
+				'99999' || poep.PrdOeGid AS OrrGid,						
+				art.ArtGid AS OrrArtGid,
+				poep.PrdOeRegelNr AS OrrRegelnr,
+				OrrRegelsoort = 2,
+				poep.PrdOeOmschrijving AS OrrTekstOpFactuur,
+				OrrAantalBesteldVrrdEenh = '0.000',
+				poep.PrdOeAantalTotaalTeVerwerken AS OrrAantalLeveringVrrdEenh,
+				OrrAantalBackorderVrrdEenh = '0.000',
+				OrrAantalGeleverdVrrdEenh = '0.000',
+				poephist.tabProductieOrderEindProduct_HIST_date AS OrrLastModified,
+				orr.OrrGid AS verkoop_orderregel_gid,	
+				pork.PrdOkStatus AS productie_status,	
+				art.ArtOmsEenheid AS voorraadeenheid,
+				vke.VkeVerkoopEenheid AS verkoopeenheid,			
+				ork.OrkLeverDatum AS verkooporder_leverdatum,
+				orr.OrrAantalVrrdEenhInVerkEenh AS aantal_voorraadeenheden_in_verkoopeenheid,
+				orr.OrrAantalBesteld AS aantal_verkoopeenheden,
+				productie_order = 1
+				--porkhist.*
+				--opb.*
+				--pork.*
+				--poep.*
+				--poeps.*
+				--orr.*
+				--art.*
+				--vke.*,
+				--ork.*,
+				--deb.*
+			FROM 
+				KingSystem.tabProductieOrderKop pork
+			LEFT JOIN kingsystem.tabProductieOrderEindProduct poep ON poep.PrdOePrdOkGid = pork.PrdOkGid
+			LEFT JOIN kingsystem.tabProductieOrderEindproductSpec poeps ON poeps.PrdOesPrdOeGid = poep.PrdOeGid AND poeps.PrdOesSoort = 1
+			LEFT JOIN Kingsystem.tabOrderRegel orr ON poeps.PrdOesOrrGid IS NOT NULL AND orr.OrrGid = poeps.PrdOesOrrGid
+			Left JOIN KingSystem.tabVrPRD000000 prvr ON pork.PrdOkGid = prvr.VrPRD000000RecordId
+			Left JOIN KingSystem.tabArtikel art ON art.Artgid = poep.PrdOeArtGid
+			Left JOIN KingSystem.tabVerkoopEenheid vke ON vke.VkeGid = orr.OrrVkeGid
+			Left JOIN KingSystem.tabOrderKop ork ON ork.OrkGid = orr.OrrOrkGid			
+			Left JOIN KingSystem.vwKMBDebStam deb ON ork.OrkNawGid = deb.NawGidje
+			LEFT JOIN KingSystem.tabOpbrengstGroep opb ON art.ArtOpbrGrpGId = opb.OpbrGrpGId
+			LEFT JOIN (
+				SELECT 
+					PrdOkGid_HIST, 
+					MAX(tabProductieOrderKop_HIST_date) AS LatestDate
+				FROM 
+					kingsystem.tabProductieOrderKop_HIST
+				GROUP BY 
+					PrdOkGid_HIST
+			) LatestHist ON pork.PrdOkGid = LatestHist.PrdOkGid_HIST
+			LEFT JOIN kingsystem.tabProductieOrderKop_HIST porkhist ON porkhist.PrdOkGid_HIST = LatestHist.PrdOkGid_HIST AND porkhist.tabProductieOrderKop_HIST_date = LatestHist.LatestDate		
+			LEFT JOIN (
+				SELECT 
+					PrdOeGid_HIST, 
+					MAX(tabProductieOrderEindProduct_HIST_date) AS LatestDate
+				FROM 
+					kingsystem.tabProductieOrderEindProduct_HIST
+				GROUP BY 
+					PrdOeGid_HIST
+			) LatestEindProductHist ON poep.PrdOeGid = LatestEindProductHist.PrdOeGid_HIST
+			LEFT JOIN kingsystem.tabProductieOrderEindProduct_HIST poephist ON poephist.PrdOeGid_HIST = LatestEindProductHist.PrdOeGid_HIST AND poephist.tabProductieOrderEindProduct_HIST_date = LatestEindProductHist.LatestDate
+			WHERE
+				(pork.PrdOkStatus = 2 OR pork.PrdOkStatus = 3)
+			--AND
+				--pork.PrdOkProductieStartOp >= '{$datum_start}'
+			--AND
+				--pork.PrdOkProductieStartOp <= '{$datum_eind}'
+			--AND 
+				--pork.PrdOkOmschrijving LIKE '%TEST%'
+			
+		";
+
+		if($prod_orders = $odbc->results($sql_3_beutech)){
+
+			echo "Aantal productieorders = " . count($prod_orders) . "<br>";
+			
+			$prod_orr_check = array_map(function($item) {
+				return (object)[
+					'OrrGid' => $item->OrrGid,
+					'vrART000000Veld1' => $item->vrART000000Veld1,
+				];
+			}, $prod_orders);
+			
+			//echo "<pre>";
+			//print_r($prod_orders);
+			//print_r($prod_orr_check);
+			//echo "</pre>";
+			//exit();
+			
+		}else{
+			//echo "Geen productieorders gevonden";
+			$prod_orders = array();
+			$prod_orr_check = array();
+		}
+		//exit();
+				
 		$sql="
 			SELECT
 				ork.OrkNawGid,
@@ -1370,7 +1478,8 @@ class Orders_model extends CI_Model { // Orders Model class
 				orr.OrrAantalLeveringVrrdEenh,
 				orr.OrrAantalBackorderVrrdEenh,
 				orr.OrrAantalGeleverdVrrdEenh,
-				orr.OrrLastModified
+				orr.OrrLastModified,
+				productie_order = 0
 			FROM 
 				KingSystem.tabOrderKop ork
 				LEFT JOIN KingSystem.vwKMBDebstam naw ON ork.OrkNawGid = naw.NawGidje
@@ -1454,20 +1563,61 @@ class Orders_model extends CI_Model { // Orders Model class
 						END
 					)
 			AND
-				ork.Orkleverdatum != 
-					(                       
-						CASE 
+				ork.Orkleverdatum !=
+					(                
+						CASE
 							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Draaibank' THEN '2080-01-01'
-							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01'							
-							ELSE '{$date_lock}' 
+							WHEN avr." . $vrije_rubrieken['Afdeling'] . " = 'Handvorm' THEN '2080-01-01'
+							ELSE '{$date_lock}'
 						END
-					)					
+					)		
 			ORDER BY
 				orr.OrrGid ASC
 		";
+		
+		
+		if($orders = $odbc->results($sql)){  //If ODBC results: proceed
 
-		if($orders = $odbc->results($sql)){ //If ODBC results: proceed
+			echo "Aantal orders = " . count($orders) . "<br>";
+				
+			//echo "<pre>";
+			//print_r($prod_orders);
+			//echo "</pre>";
+			//exit();
+			
+		}else{
+			//echo "Geen productieorders gevonden";
+			$orders = array();
+		}
+		
+	if($orders || $prod_orders){
+		
+			echo "Aantal verkooporders zonder filter = " . count($orders) . "<br>";
 
+			// Step 1: Extract all 'orderregel_id' values from $prod_orders
+			$orderregel_ids = array_map(function($prod_order) {
+				return $prod_order->verkoop_orderregel_gid;
+			}, $prod_orders);
+
+			// Step 2: Filter the $orders array to exclude matching 'OrrGid'
+			$filtered_orders = array_filter($orders, function($order) use ($orderregel_ids) {
+				return !in_array($order->OrrGid, $orderregel_ids);
+			});
+			
+			// Step 3: Reset array keys (optional)
+			$filtered_orders = array_values($filtered_orders);
+			
+			$merged_array = array_merge($prod_orders, $filtered_orders);
+			
+			$orders = $merged_array;
+			
+			echo "Aantal verkooporders met filter = " . count($filtered_orders) . "<br>";
+
+			//echo "<pre>";
+			//print_r($orders);
+			//echo "</pre>";
+			//exit();
+		
 			//Get array -> unique orderregel ID for all rows from local database
 			$administratie = "Beutech";
 			$this->db->select('orderregel_id');
@@ -1491,7 +1641,7 @@ class Orders_model extends CI_Model { // Orders Model class
 				$key = $vrije_rubrieken['Subafdeling'];
 				$sub_afdeling_code = $order->$key;
 				$debiteur_gid = $order->OrkNawGid;
-				$debiteurnr = $order->NawFilNummer;
+				$debiteurnr = !empty($order->NawFilNummer) ? $order->NawFilNummer : 9999999;
 				
 				//Set productie uren
 				$key = $vrije_rubrieken['Productietijd'];
@@ -1509,8 +1659,10 @@ class Orders_model extends CI_Model { // Orders Model class
 				$orderregel_id = $order->OrrGid;
 				$orderregel_nr = $order->OrrRegelnr;
 				
-				$order_last_modified_king = $order->OrkLastModified;
-				$orderregel_last_modified_king = $order->OrrLastModified;
+				$current_datetime = (new DateTime())->format('Y-m-d H:i:s');
+
+				$order_last_modified_king = !empty($order->OrkLastModified) ? $order->OrkLastModified : $current_datetime;
+				$orderregel_last_modified_king = !empty($order->OrrLastModified) ? $order->OrrLastModified : $current_datetime;
 				
 				//Set add to db variables to 0
 				$add_to_db = 0;
@@ -1572,11 +1724,23 @@ class Orders_model extends CI_Model { // Orders Model class
 					$action = "Toegevoegd";
 					$order_last_modified_king = $order->OrkLastModified;
 					$orderregel_last_modified_king = $order->OrrLastModified;
-					$debiteurnr = $order->NawFilNummer;
-					$klant = utf8_encode($order->VAdrNaam1);
+					$debiteurnr = !empty($order->NawFilNummer) ? $order->NawFilNummer : 9999999;
+					$klant = $order->VAdrNaam1;
+					$productie_order = $order->productie_order;
+					// Check if VAdrNaam1 is empty or not UTF-8 encoded
+					if (empty($klant)) {
+						$klant = "Beutech productieorder";
+					} elseif (!mb_check_encoding($klant, 'UTF-8')) {
+						$klant = mb_convert_encoding($klant, 'UTF-8', 'ISO-8859-1');
+					}
+					
 					$artikelnr = $order->ArtCode;
 					$opbrgroep = $order->OpbrGrpNummer;
-					$product = utf8_encode($order->OrrTekstOpFactuur);
+					if (!mb_check_encoding($order->OrrTekstOpFactuur ?? '', 'UTF-8')) {
+						$product = mb_convert_encoding($order->OrrTekstOpFactuur, 'UTF-8', 'ISO-8859-1');
+					} else {
+						$product = $order->OrrTekstOpFactuur;
+					}					
 					$aantal = str_replace(".000", "" ,$order->OrrAantalLeveringVrrdEenh);
 					$aantal_besteld = str_replace(".000", "" ,$order->OrrAantalBesteldVrrdEenh);
 					$aantal_backorder = str_replace(".000", "" ,$order->OrrAantalBackorderVrrdEenh);
@@ -1747,7 +1911,8 @@ class Orders_model extends CI_Model { // Orders Model class
 								aantal_backorder,
 								aantal_besteld,
 								aantal_geleverd,
-								referentie
+								referentie,
+								productie_order
 							)
 						VALUES
 							(
@@ -1779,7 +1944,8 @@ class Orders_model extends CI_Model { // Orders Model class
 								".$this->db->escape($aantal_backorder).",
 								".$this->db->escape($aantal_besteld).",
 								".$this->db->escape($aantal_geleverd).",
-								".$this->db->escape($referentie)."
+								".$this->db->escape($referentie).",
+								".$this->db->escape($productie_order)."
 							)
 					";  
 					$this->db->query($sql);
@@ -1806,11 +1972,22 @@ class Orders_model extends CI_Model { // Orders Model class
 					$action = "Gewijzigd";											
 					$order_last_modified_king = $order->OrkLastModified;
 					$orderregel_last_modified_king = $order->OrrLastModified;
-					$debiteurnr = $order->NawFilNummer;
-					$klant = utf8_encode($order->VAdrNaam1);
+					$debiteurnr = !empty($order->NawFilNummer) ? $order->NawFilNummer : 9999999;
+					$klant = $order->VAdrNaam1;
+					$productie_order = $order->productie_order;
+					// Check if VAdrNaam1 is empty or not UTF-8 encoded
+					if (empty($klant)) {
+						$klant = "Beutech productieorder";
+					} elseif (!mb_check_encoding($klant, 'UTF-8')) {
+						$klant = mb_convert_encoding($klant, 'UTF-8', 'ISO-8859-1');
+					}
 					$artikelnr = $order->ArtCode;
 					$opbrgroep = $order->OpbrGrpNummer;
-					$product = utf8_encode($order->OrrTekstOpFactuur);
+					if (!mb_check_encoding($order->OrrTekstOpFactuur, 'UTF-8')) {
+						$product = mb_convert_encoding($order->OrrTekstOpFactuur, 'UTF-8', 'ISO-8859-1');
+					} else {
+						$product = $order->OrrTekstOpFactuur;
+					}
 					$aantal = str_replace(".000", "" ,$order->OrrAantalLeveringVrrdEenh);
 					$aantal_backorder = str_replace(".000", "" ,$order->OrrAantalBackorderVrrdEenh);
 					$aantal_besteld = str_replace(".000", "" ,$order->OrrAantalBesteldVrrdEenh);
@@ -2008,7 +2185,9 @@ class Orders_model extends CI_Model { // Orders Model class
 								administratie = ".$this->db->escape($administratie).",
 								last_update_king = ".$this->db->escape($order_last_modified_king).",
 								last_update_regel_king = ".$this->db->escape($orderregel_last_modified_king).",
-								referentie = ".$this->db->escape($referentie)."
+								referentie = ".$this->db->escape($referentie).",
+								productie_order = ".$this->db->escape($productie_order)."
+								
 						WHERE
 							orderregel_id = ".$this->db->escape($orderregel_id)."
 						AND
@@ -2060,12 +2239,28 @@ class Orders_model extends CI_Model { // Orders Model class
 					
 						$con_nummer = $contactpersoon->NawGid . $contactpersoon->RelNummer;
 						$con_debiteurnr = $debiteurnr;
-						$con_voornaam = utf8_encode($contactpersoon->RelVoornaam);
-						$con_achternaam = utf8_encode($contactpersoon->RelAchternaam);
-						$con_vol_naam = utf8_encode($contactpersoon->RelVolledigenaam);
+						if (!mb_check_encoding($contactpersoon->RelVoornaam, 'UTF-8')) {
+							$con_voornaam = mb_convert_encoding($contactpersoon->RelVoornaam, 'UTF-8', 'ISO-8859-1');
+						} else {
+							$con_voornaam = $contactpersoon->RelVoornaam;
+						}
+						if (!mb_check_encoding($contactpersoon->RelAchternaam, 'UTF-8')) {
+							$con_achternaam = mb_convert_encoding($contactpersoon->RelAchternaam, 'UTF-8', 'ISO-8859-1');
+						} else {
+							$con_achternaam = $contactpersoon->RelAchternaam;
+						}
+						if (!mb_check_encoding($contactpersoon->RelVolledigenaam, 'UTF-8')) {
+							$con_vol_naam = mb_convert_encoding($contactpersoon->RelVolledigenaam, 'UTF-8', 'ISO-8859-1');
+						} else {
+							$con_vol_naam = $contactpersoon->RelVolledigenaam;
+						}					
 						$con_geslacht = $contactpersoon->Geslacht;
 						$con_telefoon = $contactpersoon->RelTelefoon;
-						$con_email = utf8_encode($contactpersoon->RelEmail);
+						if (!mb_check_encoding($contactpersoon->RelEmail, 'UTF-8')) {
+							$con_email = mb_convert_encoding($contactpersoon->RelEmail, 'UTF-8', 'ISO-8859-1');
+						} else {
+							$con_email = $contactpersoon->RelEmail;
+						}
 						if(isset($contactpersoon->RelFnCode) && !empty($contactpersoon->RelFnCode)){
 							$con_functie_code = $contactpersoon->RelFnCode;
 							$con_functie = $contactpersoon->OmsFunctie;
@@ -2098,7 +2293,17 @@ class Orders_model extends CI_Model { // Orders Model class
 			
 			
 			//Check for deleted orderregel IDs in King
-			if($orders_2_beutech = $odbc->results($sql_2_beutech)){
+			$orders_check_beutech = $odbc->results($sql_2_beutech);
+			
+			$orders_2_beutech = array_merge($orders_check_beutech, $prod_orr_check);
+					
+			if($orders_2_beutech){
+				
+				//echo "<pre>";
+				//print_r($prod_orr_check);
+				//echo "</pre>";
+				//exit();
+				
 				
 				$administratie = "Beutech";
 				
@@ -2181,12 +2386,10 @@ class Orders_model extends CI_Model { // Orders Model class
 
 		
 	} //END OF - Sync orders Beutech
-	
-	
+		
 	public function update_afdelingen($administratie, $afdeling_code, $sub_afdeling_code){
 		
 	}
-	
 	
 	function truncateOrders(){ //Sync orders Beutech
 		//$action = "Verwijderd";
